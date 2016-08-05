@@ -1,0 +1,64 @@
+.hover
+{
+	-webkit-transition: all .5s ease-in-out;
+	   -moz-transition: all .5s ease-in-out;
+		-ms-transition: all .5s ease-in-out;
+		 -o-transition: all .5s ease-in-out;
+			transition: all .5s ease-in-out;
+		border-color: #A5ABFF;
+		border-width: 1px;
+}
+.hover:hover
+{
+	box-shadow: 5px 5px 10px #254c6c;
+}
+
+
+
+
+.form-comentario
+{
+	border-style: dashed;
+	border-width: 1px;
+	border-color: gray;
+}
+.table
+{
+	background-color: white;
+
+}
+
+.input-xs
+{
+	height: 20px;
+	font-size: 12px;
+}
+
+
+.login-card{
+	position: absolute;
+	top: 25%;
+	width: 70%;
+	left: 33%;
+	max-width: 330px;
+	background-color: white;
+	border: 1px ridge #91ABFF;
+	box-shadow: 5px 5px 10px grey;
+}
+@media (max-width: 480px) { 
+		.login-card{
+			position: absolute;
+			top: 25%;
+			left: 15%;
+			width: 330px;
+			max-width: 330px;
+			background-color: white;
+			border: 1px ridge #91ABFF;
+			box-shadow: 5px 5px 10px grey;
+		}
+
+	}
+.container-login{
+	background-image: url(http://indepresearch.com/wp-content/uploads/2016/02/bba-city-background-optimized.jpg);
+	background-attachment: fixed;	
+}
