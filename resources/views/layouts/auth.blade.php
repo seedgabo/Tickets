@@ -4,9 +4,12 @@
 @include('layouts.partials.htmlheader')
 	<body class="container-login">
 		<center><img src="{{asset('img/logo.png')}}" alt="" height="100px"></center>
-		<div class="login-card col-md-3">
-			@yield('content')
-		</div>
+		<br><br>
+		<center>
+			<div class="login-card text-center">
+				@yield('content')
+			</div>
+		</center>
 	</body>
 
 </html>

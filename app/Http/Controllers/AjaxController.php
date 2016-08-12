@@ -14,7 +14,9 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Storage;
 use Laracasts\Flash\Flash;
 
 class AjaxController extends Controller
@@ -39,13 +41,35 @@ class AjaxController extends Controller
 
     public function addComentarioTicket(Request $request)
     {
+        if($request->hasFile('archivo') && $request->get("encriptado") == "true" && !$request->has("clave"))
+        {
+            Flash::error("Debe Ingresar Una contraseña para encriptar el archivo");
+            return back();
+        }
+
         $comentario = \App\Models\ComentariosTickets::create($request->input('comentario'));
         Flash::success("Comentario Agregado exitosamente");
         if($request->hasFile('archivo'))
         {
             $nombre = $comentario->id  . "." . $request->file("archivo")->getClientOriginalExtension();
-            $request->file('archivo')->move(public_path("archivos/ComentariosTickets/"), $nombre );
-            $comentario->archivo =  $request->file("archivo")->getClientOriginalName();
+
+            // Si Se pidio Encriptar El Archivo
+            if($request->get("encriptado") == "true")
+            {                   
+                $comentario->encriptado = true;
+                $comentario->archivo = $nombre;
+                $comentario->clave = $request->get("clave");              
+
+                $encriptado = Crypt::encrypt(file_get_contents($request->file("archivo")));
+                Storage::put("ComentariosTickets/". $comentario->id . "/" . $nombre , $encriptado);
+
+                Flash::success('Archivo Encriptado');
+            }
+            else
+            {
+                $request->file('archivo')->move(public_path("archivos/ComentariosTickets/"), $nombre );
+                $comentario->archivo =  $nombre;
+            }
             $comentario->save();
         }
         if($request->exists('notificacion'))

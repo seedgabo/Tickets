@@ -126,6 +126,22 @@
 				        <p class="help-block">El archivo debe pesar menos de 10Mb, solo documentos, imagenes y archivos comprimidos estan permitidos</p>
 				        <small class="text-danger">{{ $errors->first('archivo') }}</small>
 				    </div>
+				    <div class="form-group">
+				        <div class="checkbox{{ $errors->has('encriptado') ? ' has-error' : '' }}">
+				            <label for="encriptado">
+				                {!! Form::checkbox('encriptado','true', false, ['id' => 'encriptado']) !!} Encriptar Archivo
+				            </label>
+				        </div>
+				        <small class="text-danger">{{ $errors->first('encriptado') }}</small>
+				    </div>
+
+				    <div class="form-group{{ $errors->has('clave') ? ' has-error' : '' }}">
+				        {!! Form::label('clave', 'Clave de Encriptación', ['class' => 'col-sm-3 control-label']) !!}
+				    	<div class="col-sm-9">
+				        	{!! Form::text('clave', null, ['class' => 'form-control']) !!}
+				        	<small class="text-danger">{{ $errors->first('clave') }}</small>
+				    	</div>
+				    </div>
 
 
 				{!! Form::close() !!}

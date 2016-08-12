@@ -11,6 +11,8 @@ use App\Repositories\TicketsRepository;
 use App\User;
 use Flash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Storage;
 use InfyOm\Generator\Controller\AppBaseController;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
@@ -36,7 +38,7 @@ class TicketsController extends AppBaseController
     public function index(Request $request)
     {
         $this->ticketsRepository->pushCriteria(new RequestCriteria($request));
-        $tickets = Tickets::like("titulo",$request->input('titulo'))->get();
+        $tickets = Tickets::where("titulo","LIKE",$request->input('titulo'))->get();
         return view('tickets.index')
             ->with('tickets', $tickets);
     }
@@ -58,21 +60,46 @@ class TicketsController extends AppBaseController
      *
      * @return Response
      */
-    public function store(CreateTicketsRequest $request)
+    public function store(Request $request)
     {
-        $input = $request->except("archivo");
+        if($request->hasFile('archivo') && $request->get("encriptado") == "true" && !$request->has("clave"))
+        {
+            Flash::error("Debe Ingresar Una contraseña para encriptar el archivo");
+            return back();
+        }
+        
+        $input = $request->except("archivo","enriptado","clave");
         $tickets = \App\Models\Tickets::create($input);
         $tickets->created_at = new \Carbon\Carbon();
         $tickets->save();
         if($request->hasFile('archivo'))
         {   
             $nombre = $request->file("archivo")->getClientOriginalName();
-            $request->file('archivo')->move(public_path("archivos/tickets/"), $nombre );
-            $tickets->archivo = $nombre;
+
+            // Si Se pidio Encriptar El Archivo
+            if($request->get("encriptado") == "true")
+            {
+                $tickets->encriptado = true;
+                $tickets->archivo = $nombre;       
+                $tickets->clave = $request->get("clave");              
+
+                $encriptado = Crypt::encrypt(file_get_contents($request->file("archivo")));
+                Storage::put("tickets/". $tickets->id . "/" . $nombre , $encriptado);
+
+                Flash::success('Archivo Encriptado');
+            }
+            // Si no
+            else
+            {
+                $request->file('archivo')->move(public_path("archivos/tickets/" . $tickets->id . "/"), $nombre );
+                $tickets->archivo = $nombre;                
+            }
+
             $tickets->save();
         }
-        Funciones::sendMailNewTicket($tickets, \App\User::find($tickets->user_id), \App\User::find($tickets->guardian_id));
-        Flash::success('Tickets guardado correctamente.');
+
+        Funciones::sendMailNewTicket($tickets, $tickets->user, $tickets->guardian);
+        Flash::success('Ticket Agregado correctamente.');
 
         return back();
     }
@@ -125,7 +152,7 @@ class TicketsController extends AppBaseController
      *
      * @return Response
      */
-    public function update($id, UpdateTicketsRequest $request)
+    public function update($id, Request $request)
     {
         $tickets = $this->ticketsRepository->findWithoutFail($id);
         if (empty($tickets)) {

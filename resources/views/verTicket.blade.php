@@ -30,7 +30,10 @@
 			<div class="panel-body">
 				{!! $ticket->contenido !!}
 				@if ($ticket->archivo!= '' || $ticket->archivo != null)
-					<h4 class="text-right"><a href="{{$ticket->archivo()}}"><i class="ion-android-attach"></i><i class="fa fa-paperclip"></i> Ver Archivo</a></h4>
+					<h4 class="text-right">					
+					<a  @if($ticket->encriptado == "true") onclick="verArchivo('{{$ticket->archivo()}}')" @else href="{{$ticket->archivo()}}" @endif>
+						{{$ticket->archivo}}
+					</a></h4>
 				@endif
 			</div>
 			<div class="panel-footer">
@@ -65,26 +68,29 @@
 				{{App\User::find($comentario->user_id)->nombre}}
 				<img src="{{App\Funciones::getUrlProfile(App\User::find($comentario->user_id))}}" alt="" class="img-circle" height="35px">
 				@if (Auth::user()->id == $comentario->user_id)
-				 <a class="btn btn-danger btn-xs" href="{{url('ajax/deleteComentarioTicket/'.$comentario->id)}}" title="Borrar Comentario" onclick="return confirm('¿esta seguro de que quiere eliminar este comentario?')"><i class="fa fa-trash"></i></a>
+				 <a class="btn btn-danger btn-xs" href="{{url('ajax/deleteComentarioTicket/'.$comentario->id)}}" title="Borrar Comentario" onclick="return confirm('¿Esta seguro de que quiere eliminar este comentario?')"><i class="fa fa-trash"></i></a>
 				@endif
+				<br> {{\App\Funciones::transdate($comentario->created_at)}}
 				@if (isset($comentario->archivo) && $comentario->archivo != "")
 					<br>
-					<a href="{{$comentario->archivo()}}">{{$comentario->archivo}}</a>
+					<a  @if($comentario->encriptado == "true") onclick="verArchivo('{{$comentario->file()}}')" @else href="{{$comentario->file()}}" @endif>
+						{{$comentario->archivo}}
+					</a>
 				@endif
 				</p>
 			</div>
 			<hr>
 			@empty
-				No hay Seguimiento<br><strong>Sé el primero</strong>
+				Agregar su Seguimiento<br>
 			@endforelse
 		</div>
 
-		{!! Form::open(['method' => 'POST', 'url' => 'ajax/addComentarioTicket', 'class' => 'form-horizontal form-comentario', 'id' => 'form-comentario', "files" => "true"]) !!}
+		{!! Form::open(['method' => 'POST', 'url' => 'ajax/addComentarioTicket', 'class' => 'form-horizontal form-comentario', 'id' => 'form-comentario', "files" => "true" , 'novalidate']) !!}
 			<input type="hidden" name="comentario[ticket_id]" value="{{$ticket->id}}">
 			<input type="hidden" name="comentario[user_id]" value="{{Auth::user()->id}}">
 			<textarea rows="3" required="required" minlength="8" class="form-control" name="comentario[texto]" placeholder="agrega aqui el seguimiento"></textarea>
 
-				<button type="button" onclick="masOpciones();" class="btn btn-xs">Mas Opciones</button>
+				<button type="button" onclick="masOpciones();" class="btn btn-xs btn-primary">Mas Opciones</button>
 			<div id="input-avanced" style="display:none">
 
 				<div class="form-group">
@@ -114,6 +120,22 @@
 				    </div>
 				</div>
 
+				<div class="form-group ">
+				    <div class="checkbox{{ $errors->has('encriptado') ? ' has-error' : '' }} col-sm-offset-2">
+				        <label for="encriptado">
+				            {!! Form::checkbox('encriptado','true',false, ['id' => 'encriptado']) !!} <b> Encriptar Archivo </b>
+				        </label>
+				    </div>
+				    <small class="text-danger">{{ $errors->first('encriptado') }}</small>
+				</div>
+				<div class="form-group{{ $errors->has('clave') ? ' has-error' : '' }}">
+				    {!! Form::label('clave', 'Clave de Encriptacion', ['class' => 'col-sm-3 control-label']) !!}
+					<div class="col-sm-9">
+				    	{!! Form::text('clave', null, ['class' => 'form-control']) !!}
+				    	<small class="text-danger">{{ $errors->first('clave') }}</small>
+					</div>
+				</div>
+
 			</div>
 
 
@@ -137,6 +159,7 @@
             		position: 'mid-center',
             	})
 				$("#estado").val(data);
+				location.reload(true); 
 			})
 		}
 
@@ -149,9 +172,10 @@
 	            		heading: 'Hecho',
 	            		text: "Guardian Transferido",
 	            		showHideTransition: 'slide',
-	            		icon: 'info',
+	            		icon: 'success',
 	            		position: 'mid-center',
     			});
+					location.reload(true); 
     		})
 		}
 
@@ -161,27 +185,36 @@
 			$('.chosen').chosen('destroy').chosen();
 		}
 
+		function verArchivo(url)
+		{
+			var clave =  prompt("Ingrese la Contraseña");
+			if (clave)
+				window.location = url + "/" +clave;
+			else
+				alert("debe ingresar una clave valida");
+		}
+
 		$(document).ready(function() {
-			$('#form-comentario').submit(function(event) {
-				$.toast({
-	            		heading: '<h3 class="text-center">Enviando Comentario <br> <i class="fa fa-spinner fa-pulse"></i></h3>',
-	            		text: '',
-	            		showHideTransition: 'slide',
-	            		icon: 'info',
-	            		position: 'mid-center',
-	            	})
-				})
+			// $('#form-comentario').submit(function(event) {
+			// 	$.toast({
+	  //           		heading: '<h3 class="text-center">Enviando Comentario <br> <i class="fa fa-spinner fa-pulse"></i></h3>',
+	  //           		text: '',
+	  //           		showHideTransition: 'slide',
+	  //           		icon: 'success',
+	  //           		position: 'mid-center',
+   //          	})
+			// })
 
 		    $(".file-bootstrap").fileinput({
 		        maxFileSize: 10000,
 				showUpload: false,
 		        browseClass: "btn btn-success",
-		        browseLabel: "Agregar",
+		        browseLabel: "Cargar Archivo",
 		        browseIcon: "<i class=\"glyphicon glyphicon-upload\"></i> ",
 				previewFileType: "image",
 		        browseClass: "btn btn-success",
-		        browseLabel: "Agregar",
-		        browseIcon: "<i class=\"glyphicon glyphicon-picture\"></i> ",
+		        browseLabel: "Cargar Archivo",
+		        browseIcon: "<i class=\"glyphicon glyphicon-files\"></i> ",
 		        removeClass: "btn btn-danger",
 		        removeLabel: "",
 		        removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> ",

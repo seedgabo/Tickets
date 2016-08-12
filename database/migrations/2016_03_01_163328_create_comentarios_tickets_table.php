@@ -19,6 +19,8 @@ class CreateComentariosTicketsTable extends Migration
             $table->integer('user_id');
             $table->integer('ticket_id');
             $table->string('archivo')->nullable();
+            $table->boolean('encriptado')->default(false);
+            $table->string('clave')->nullable();
 			$table->timestamps();
 			$table->softDeletes();
         });

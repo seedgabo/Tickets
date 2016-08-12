@@ -53,4 +53,7 @@
 
     <link href="{{asset('css/dependent-dropdown.min.css')}}" media="all" rel="stylesheet" type="text/css" />
     <script src="{{asset('js/dependent-dropdown.min.js')}}" type="text/javascript"></script>
+
+    <link href="{{asset('css/jquerytoast.min.css')}}" media="all" rel="stylesheet" type="text/css" />
+    <script src="{{asset('js/jquerytoast.min.js')}}" type="text/javascript"></script>
 </head>

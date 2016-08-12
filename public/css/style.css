@@ -36,28 +36,13 @@
 
 
 .login-card{
-	position: absolute;
-	top: 25%;
-	width: 70%;
-	left: 33%;
-	max-width: 330px;
+	width: 330px;
+	padding: 10px;
 	background-color: white;
 	border: 1px ridge #91ABFF;
 	box-shadow: 5px 5px 10px grey;
 }
-@media (max-width: 480px) { 
-		.login-card{
-			position: absolute;
-			top: 25%;
-			left: 15%;
-			width: 330px;
-			max-width: 330px;
-			background-color: white;
-			border: 1px ridge #91ABFF;
-			box-shadow: 5px 5px 10px grey;
-		}
 
-	}
 .container-login{
 	background-image: url(http://indepresearch.com/wp-content/uploads/2016/02/bba-city-background-optimized.jpg);
 	background-attachment: fixed;	

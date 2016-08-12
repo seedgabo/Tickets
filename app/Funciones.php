@@ -121,7 +121,7 @@ class Funciones
     {
         Mail::send('emails.CarritoProcesado', ['user' => $user,'cliente' => $cliente ,'empresa' => $empresa, 'email' => $emails,'productos' => $productos], function ($m) use ($user, $empresa , $emails)
         {
-            $m->from('sistemaSiasoft@siasoftsas.com', $empresa->nombre);
+            $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
             $m->to($emails)->subject('¡Tu compra ha sido procesada!');
         });
     }
@@ -130,8 +130,7 @@ class Funciones
     {
         Mail::send('emails.NewUser', ['user' => $user], function ($m) use ($user)
         {
-            $m->from('SistemaTickets@duflosa.com');
-            $m->sender('SistemaTickets@duflosa.com');
+            $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
             $m->to($user->email);
             $m->subject('¡Usuario Creado con Exito!');
         });
@@ -144,14 +143,14 @@ class Funciones
         Mail::send('emails.NewTicket', ['user' => $user,'guardian' => $guardian ,'ticket' => $ticket], function ($m)
             use ($user, $guardian)
         {
-            $m->from('sistemaSiasoft@siasoftsas.com', "Sistema Siasoft");
+            $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
             $m->to($guardian->email)->subject('¡Nuevo Ticket Asignado!');
         });
 
         foreach ($usuarios as $usuario) {
             Mail::send('emails.NewTicketGeneral', ['user' => $usuario,'guardian' => $guardian ,'ticket' => $ticket, "creador" => $user], function ($m)   use ($usuario, $guardian)
             {
-                $m->from('sistemaSiasoft@siasoftsas.com', "Sistema Siasoft");
+                $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
                 $m->to($usuario->email, $usuario->nombre)->subject('¡Nuevo Ticket!');
             });
         }
@@ -163,7 +162,7 @@ class Funciones
 
         Mail::send('emails.NewComentario', ["comentario" =>  $comentario], function ($m)   use ($usuarios)
         {
-            $m->from('sistemaSiasoft@siasoftsas.com', "Sistema Siasoft");
+            $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
             $m->to($usuarios)->subject('¡Nuevo Comentario!');
         });
     }
@@ -173,7 +172,7 @@ class Funciones
 
         Mail::send('emails.NewGuardian', ["guardian" =>  $guardian,"ticket"=>$ticket,"user" => $user], function ($m)   use ($guardian)
         {
-            $m->from('sistemaSiasoft@siasoftsas.com', "Sistema Siasoft");
+            $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
             $m->to($guardian->email, $guardian->nombre)->subject('Asignación de guardian');
         });
     }
@@ -182,7 +181,7 @@ class Funciones
     {
         Mail::send('emails.changedPassword', ["user" => $user], function ($m)   use ($user)
         {
-            $m->from('sistemaSiasoft@siasoftsas.com', "Sistema Siasoft");
+            $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
             $m->to($user->email, $user->nombre)->subject('Cambio de Contraseña detectado');
         });
     }

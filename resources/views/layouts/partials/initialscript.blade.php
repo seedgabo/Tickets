@@ -11,7 +11,7 @@
 
             $('.datatable tfoot th').each( function () {
                     var title = $(this).text();
-                    $(this).html( '<input type="search" style="width: 100px;" class="form-control input-xs"/>' );
+                    $(this).html( '<input type="search" style="width: 100px;" class="form-control input-sm"/>' );
                 } );
             
             table =  $('.datatable').DataTable({

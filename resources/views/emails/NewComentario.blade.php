@@ -12,7 +12,7 @@
             Ticket:  {{ App\Models\Tickets::find($comentario->ticket_id)->titulo}} <br>
             Usuario:  {{App\User::find($comentario->user_id)->nombre}}<br>
              @if (isset($comentario->archivo))
-                <span>Archivo: {{$comentario->archivo()}}</span>
+                <span>Archivo: {{$comentario->file()}}</span>
              @endif
             </div>
         </div>

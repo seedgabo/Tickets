@@ -63,6 +63,12 @@
     {!! Form::file('archivo') !!}
 </div>
 
+<!-- Transferible Field --->
+<div class="form-group col-sm-6">
+    {!! Form::label('encriptado', 'Encriptado:') !!}
+    {!! Form::select('encriptado',["false" => "no" , "truephp arti" => "si"], null ,['class' => 'form-control chosen']) !!}
+</div>
+
 <!--- vencimiento Field --->
 <div class="form-group col-sm-6">
     {!! Form::label('vencimiento', 'Vence el:') !!}

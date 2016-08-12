@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'from' => ['address' => 'sistemaSiasoft@siasoftsas', 'name' => 'Sistema automatico Siasoft'],
+    'from' => ['address' => 'SistemaSeguimiento@duflosa.com', 'name' => 'Sistema de Seguimiento Automatico'],
 
     /*
     |--------------------------------------------------------------------------

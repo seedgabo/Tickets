@@ -22,6 +22,6 @@
     <small> Se Recomienda cambia la clave lo antes posible</small>
 
 
-    <a href="http://siasoftsas.com">
-        {{Html::image('http://siasoftsas.com/public/img/logo.png')}}
+    <a href="{{url('/')}}">
+        {{Html::image(asset('img/logo.png'))}}
     </a>

@@ -23,6 +23,8 @@ class Tickets extends Model
 		"archivo",
         "vencimiento",
         "transferible",
+        "encriptado",
+        "clave",
         "created_at"
     ];
 
@@ -39,7 +41,9 @@ class Tickets extends Model
 		"estado" => "string",
 		"categoria_id" => "string",
 		"archivo" => "string",
-        "transferible" => "string",
+        "transferible" => "boolean",
+        "encriptado" => "boolean",
+        "clave" => "string"
     ];
 
     /**
@@ -72,7 +76,14 @@ class Tickets extends Model
 
     public function archivo()
     {
-        return asset("archivos/tickets/". $this->archivo);
+        if($this->encriptado == true)
+        {
+            return url("getEncryptedFile/ticket/" . $this->id);
+        }
+        else
+        {
+            return asset("archivos/tickets/". $this->id ."/". $this->archivo);
+        }
     }
 
 

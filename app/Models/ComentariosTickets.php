@@ -6,35 +6,47 @@ use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 class ComentariosTickets extends Model
 {
+    use SoftDeletes;
 
     public $table = "comentarios_tickets";
 
-	protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at'];
 
 
     public $fillable = [
         "texto",
-		"user_id",
+        "user_id",
         "ticket_id",
-        "archivo"
+        "archivo",
+        "encriptado",
     ];
+
     protected $casts = [
         "texto" => "string",
-		"user_id" => "integer",
+        "user_id" => "integer",
         "ticket_id" => "integer",
-        "archivo" => "string"
+        "archivo" => "string",
+        "encriptado" => "boolean",
+        "clave" => "string"
     ];
 
     public static $rules = [
-        "texto" => "required|min:8",
-		"user_id" => "required",
-        "ticket_id" => "required",
-        "archivo"  => "image|max:20000"
+        "texto" => "min:8",
+        "user_id" => "",
+        "ticket_id" => "",
+        "archivo"  => "max:80000"
     ];
 
-    public function archivo()
+    public function file()
     {
-        return  asset("archivos/ComentariosTickets/" . $this->id . "." . explode(".",$this->archivo)[1]);
+        if($this->encriptado == true)
+        {
+            return url("getEncryptedFile/comentario/" . $this->id);
+        }
+        else
+        {
+            return  asset("archivos/ComentariosTickets/" . $this->id . "." . explode(".", $this->archivo)[1]);
+        }
     }
 
 }

@@ -17,8 +17,8 @@
                     <span class="sr-only">Toggle navigation</span>
                     <i class="fa fa-bars"></i>
                 </button>
-                <a class="navbar-brand" href="{{url("")}}">
-                    <img src="{{asset('img/logo.png')}}" alt="logo" class="img-responsive" style="height: 100%">
+                <a class="navbar-brand" href="{{url('')}}">
+                    <img src="{{asset('img/logo.png')}}" alt="logo" class="img-responsive" style="height: 50px">
                 </a>
             </div>
             <!-- /.navbar-header -->
@@ -159,6 +159,7 @@
         <div id="page-wrapper">
             <div class="">
                 <div class="row">
+                @include('flash::message')
                     <div class="">
                         @yield('content')
                     </div>

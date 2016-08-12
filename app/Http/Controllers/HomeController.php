@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Storage;
 use Laracasts\Flash\Flash;
 
 class HomeController extends Controller
@@ -128,7 +129,7 @@ class HomeController extends Controller
             return view("errors/401");
         }
         $comentarios = ComentariosTickets::where("ticket_id",$ticket->id)
-        ->orderBy("created_at")
+        ->orderBy("created_at", "desc")
         ->get();
         return view("verTicket")->withTicket($ticket)->withComentarios($comentarios);
     }
@@ -145,5 +146,35 @@ class HomeController extends Controller
             \Flash::error("No tiene los permisos necesarios");
         }
         return back();
+    }
+
+    public function getFileTicketEncrypted(Request $request, $id, $clave)
+    {
+        $ticket = Tickets::find($id);
+        if($clave != $ticket->clave)
+            return "Clave Incorrecta. No Autorizado";
+
+        $encryptedContents = Storage::get("tickets/". $id . "/" . $ticket->archivo);
+        $decryptedContents = Crypt::decrypt($encryptedContents);
+
+        return response()->make($decryptedContents, 200, array(
+            'Content-Type' => (new \finfo(FILEINFO_MIME))->buffer($decryptedContents),
+            'Content-Disposition' => 'attachment; filename="' . $ticket->archivo . '"'
+        ));
+    }
+
+    public function getFileComentarioTicketEncrypted(Request $request, $id, $clave)
+    {
+        $comentario = ComentariosTickets::find($id);
+        if($clave != $comentario->clave)
+            return "Clave Incorrecta. No Autorizado";
+
+        $encryptedContents = Storage::get("ComentariosTickets/". $id . "/" . $comentario->archivo);
+        $decryptedContents = Crypt::decrypt($encryptedContents);
+
+        return response()->make($decryptedContents, 200, array(
+            'Content-Type' => (new \finfo(FILEINFO_MIME))->buffer($decryptedContents),
+            'Content-Disposition' => 'attachment; filename="' . $comentario->archivo . '"'
+        ));
     }
 }
