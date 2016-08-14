@@ -131,7 +131,7 @@
 				<div class="form-group{{ $errors->has('clave') ? ' has-error' : '' }}">
 				    {!! Form::label('clave', 'Clave de Encriptacion', ['class' => 'col-sm-3 control-label']) !!}
 					<div class="col-sm-9">
-				    	{!! Form::text('clave', null, ['class' => 'form-control']) !!}
+				    	{!! Form::password('clave', null, ['class' => 'form-control']) !!}
 				    	<small class="text-danger">{{ $errors->first('clave') }}</small>
 					</div>
 				</div>

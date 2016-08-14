@@ -27,6 +27,10 @@ Route::group(['middleware' => 'web'], function () {
 		Route::get('/ticket/ver/{id}',   ['middleware' => ['auth'], 'uses' =>'HomeController@ticketVer']);
 		Route::get('ticket/eliminar/{id}', ['middleware' => ['auth'], 'uses' =>'HomeController@ticketEliminar']);
 
+		Route::get('ver-documentos', ['midleware' => ['auth'], 'uses' => 'HomeController@listarCategorias']);
+		Route::get('ver-documentos/{categoria}', ['midleware' => ['auth'], 'uses' => 'HomeController@listarDocumentos']);
+
+		Route::get('getDocumento/{id}', ['middleware' => ['auth'], 'uses' =>'HomeController@getDocumento']);		
 		Route::get('getEncryptedFile/ticket/{id}/{clave}', ['middleware' => ['auth'], 'uses' =>'HomeController@getFileTicketEncrypted']);
 		Route::get('getEncryptedFile/comentario/{id}/{clave}', ['middleware' => ['auth'], 'uses' =>'HomeController@getFileComentarioTicketEncrypted']);
 	});
@@ -60,6 +64,12 @@ Route::group(['middleware' => 'web'], function () {
 			'as' => 'categoriasTickets.delete',
 			'uses' => 'CategoriasTicketsController@destroy',
 		]);
+		
+		Route::resource('documentos', 'DocumentosController');
+		Route::get('Documentos/delete/{id}', [
+			'as' => 'documentos.delete',
+			'uses' => 'DocumentosController@destroy',
+		]);
 	});
 
 
@@ -73,7 +83,6 @@ Route::group(['middleware' => 'web'], function () {
 	]);
 
 	Route::group(['prefix' => 'api', 'middleware' => ['api','auth.basic.once']], function(){
-
 	});
 });
 

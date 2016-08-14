@@ -148,6 +148,19 @@ class HomeController extends Controller
         return back();
     }
 
+    public function listarDocumentos (Request $request, $categoria)
+    {
+        $documentos = \App\Models\Documentos::where("categoria", "=", $categoria)->where("activo","=","1")->get();
+        return view('ver-documentos')->withDocumentos($documentos)->withCategoria($categoria);
+    }
+
+    public function listarCategorias (Request $request)
+    {
+        $categorias = \App\Models\Documentos::distinct()->pluck("categoria");
+        return view('ver-categoriasDocumentos')->withCategorias($categorias);
+    }
+
+
     public function getFileTicketEncrypted(Request $request, $id, $clave)
     {
         $ticket = Tickets::find($id);
@@ -176,5 +189,11 @@ class HomeController extends Controller
             'Content-Type' => (new \finfo(FILEINFO_MIME))->buffer($decryptedContents),
             'Content-Disposition' => 'attachment; filename="' . $comentario->archivo . '"'
         ));
+    }
+
+    public function getDocumento(Request $request, $id)
+    {
+        $documento = \App\Models\Documentos::find($id);
+        return response()->download(storage_path("documentos/" . $documento->archivo), $documento->archivo);
     }
 }
