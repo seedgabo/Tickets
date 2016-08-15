@@ -91,7 +91,8 @@ class DocumentosController extends Controller
         $documento = Documentos::find($id);
         $documento->fill($data);
         $documento->editable = $request->input("editable",false);
-        $documento->activo = $request->input("activo",false);        if($request->hasFile("archivo"))
+        $documento->activo = $request->input("activo",false);        
+        if($request->hasFile("archivo"))
         {
             $nombre = $request->file("archivo")->getClientOriginalName();
             $documento->archivo = $nombre;       

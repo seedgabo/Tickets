@@ -33,6 +33,8 @@ Route::group(['middleware' => 'web'], function () {
 		Route::get('getDocumento/{id}', ['middleware' => ['auth'], 'uses' =>'HomeController@getDocumento']);		
 		Route::get('getEncryptedFile/ticket/{id}/{clave}', ['middleware' => ['auth'], 'uses' =>'HomeController@getFileTicketEncrypted']);
 		Route::get('getEncryptedFile/comentario/{id}/{clave}', ['middleware' => ['auth'], 'uses' =>'HomeController@getFileComentarioTicketEncrypted']);
+	
+		Route::get('busqueda',['middleware' => ['auth'], 'uses' => "HomeController@busqueda"]);
 	});
 
 
@@ -73,9 +75,7 @@ Route::group(['middleware' => 'web'], function () {
 	});
 
 
-	Route::group(['prefix' => 'upload'], function() {
-		Route::any('/cargarImagenes/{id}', ['uses' =>'UploadController@cargarImagenes']);
-	});
+
 
 	Route::post('tickets/', [
 		'as' => 'tickets.store',
@@ -84,6 +84,13 @@ Route::group(['middleware' => 'web'], function () {
 
 	Route::group(['prefix' => 'api', 'middleware' => ['api','auth.basic.once']], function(){
 	});
+	Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin']], function(){
+		CRUD::resource('categorias', 'Admin\CategoriasCrudController');
+		CRUD::resource('usuarios', 'Admin\UsuariosCrudController');
+		CRUD::resource('tickets', 'Admin\TicketsCrudController');
+		CRUD::resource('documentos', 'Admin\DocumentoCrudController');
+	});
+	
 });
 
 Route::get('api/auth', ['middleware' => 'auth.basic.once', 'uses' => 'ApiController@doLogin']);

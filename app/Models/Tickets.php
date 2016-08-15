@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use Backpack\CRUD\CrudTrait;
 class Tickets extends Model
 {
-
+    use CrudTrait;
+    use SoftDeletes;
     public $table = "tickets";
 
-	protected $dates = ['deleted_at'];
+	protected $dates = ['deleted_at', 'vencimiento'];
 
 
     public $fillable = [
@@ -25,7 +26,6 @@ class Tickets extends Model
         "transferible",
         "encriptado",
         "clave",
-        "created_at"
     ];
 
     /**

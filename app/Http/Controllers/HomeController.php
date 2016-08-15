@@ -9,6 +9,7 @@ use App\Http\Requests;
 use App\Models\CategoriasTickets;
 use App\Models\ComentariosTickets;
 use App\Models\Tickets;
+use App\Models\Documentos;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -30,7 +31,8 @@ class HomeController extends Controller
         if (Auth::check()) {
             $categorias = Auth::user()->categorias();
             $tickets = Tickets::where("guardian_id",Auth::user()->id)->take(6)->get();
-            return view('menu')->withCategorias($categorias)->withTickets($tickets);
+            $documentos = Documentos::where("activo","=","1")->orderby("updated_at","desc")->take(6)->get();
+            return view('menu')->withCategorias($categorias)->withTickets($tickets)->withDocumentos($documentos);
         }
         else{
             return redirect("login");
@@ -194,6 +196,19 @@ class HomeController extends Controller
     public function getDocumento(Request $request, $id)
     {
         $documento = \App\Models\Documentos::find($id);
-        return response()->download(storage_path("documentos/" . $documento->archivo), $documento->archivo);
+        return response()->download(storage_path("documentos/" . $documento->id  ."/" . $documento->archivo), $documento->archivo);
+    }
+
+    public function busqueda(Request $request)
+    {
+        $query = $request->input('query');
+        $documentos = \App\Models\Documentos::where("activo","=","1")->where("titulo","like","%".$query."%")
+        ->orwhere("descripcion","like","%".$query."%")->orwhere("categoria","like","%".$query."%")->get();
+
+        $tickets = Tickets::where("titulo","like","%".$query."%")->orwhere("contenido","like","%".$query."%")->whereIn("categoria_id",
+        Auth::user()->categorias()->pluck("id"))->get();
+
+        $categorias = CategoriasTickets::where("nombre","like", "%". $query ."%")->get();
+        return view('busqueda')->withTickets($tickets)->withDocumentos($documentos)->withCategorias($categorias);
     }
 }

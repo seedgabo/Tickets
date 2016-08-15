@@ -1,14 +1,15 @@
 @extends('layouts.app')
 @section('content')
 	<div class="text-right">
-		<a class="btn btn-primary" data-toggle="modal" href='#modal-ticket'><i class="fa fa-plus"></i> Crear un ticket</a>
+		<a class="btn btn-primary" data-toggle="modal" href='#modal-ticket'><i class="fa fa-plus"></i> Crear un Caso</a>
 		<hr>
 	</div>
 	<div class="table-responsive">
 		<table class="table table-hover datatable">
 			<thead>
 				<tr>
-					<th>Ticket</th>
+					<th>#</th>
+					<th>Caso</th>
 					<th>Categoría</th>
 					<th>Estado</th>
 					{{-- <th>contenido</th> --}}
@@ -21,6 +22,7 @@
 			<tbody>
 			 @forelse ($tickets as $ticket)
 				<tr class="@if($ticket->estado == "completado") success @endif @if($ticket->estado == "rechazado") danger @endif @if($ticket->estado == "en curso") info @endif @if($ticket->estado == "abierto") warning @endif">
+					<td>{{$ticket->id}}</td>
 					<td>
 						<a class="btn btn-link" style="text-transform: uppercase;" href="{{url("ticket/ver/".$ticket->id)}}">
 						{{$ticket->titulo}}
@@ -39,11 +41,12 @@
 					<td>{{ $ticket->vencimiento  ?  \App\Funciones::transdate($ticket->vencimiento) : "No Vence"}}</td>
 				</tr>
 			 @empty
-			 	Ningún ticket existente
+			 	Ningún caso existente
 			 @endforelse
 			</tbody>
 			<tfoot>
 				<tr>
+					<th></th>
 					<th></th>
 					<th></th>
 					{{-- <th></th> --}} 

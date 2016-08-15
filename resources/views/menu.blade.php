@@ -5,7 +5,7 @@
              <div class="col-md-6">
                 <div class="list-group">
                     <li class="list-group-item active">
-                       <h4>Mis Tickets</h4>
+                       <h4>Mis Casos</h4>
                     </li>
                   @forelse ($tickets as $ticket)
                     <a class="list-group-item" href="{{url('/ticket/ver/'. $ticket->id)}}">
@@ -28,6 +28,20 @@
                     <a class="list-group-item" href="{{url('tickets/categoria/'. $categoria->id)}}">
                       <span class="badge">{{$categoria->tickets->count()}}</span>
                        {{ $categoria->nombre }}
+                    </a>
+                  @empty
+                  @endforelse
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="list-group">
+                    <li class="list-group-item active">
+                       <h4>Ultimos Documentos</h4>
+                    </li>
+                  @forelse ($documentos as $documento)
+                    <a class="list-group-item" href="{{url('getDocumento/'. $documento->id)}}">
+                      <span class="badge">{{$documento->categoria}}</span>
+                       {{ $documento->titulo }}
                     </a>
                   @empty
                   @endforelse

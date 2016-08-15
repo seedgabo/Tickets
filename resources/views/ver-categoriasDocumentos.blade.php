@@ -1,12 +1,20 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="">
+        
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{url('ver-documentos')}}">Categorias</a>
+            </li>
+        </ol>
 
         <center> <h2>Categorias</h2></center>
-        <div class="list-group">
+        <div class="list-group col-md-8 col-md-offset-2">
             @forelse ($categorias as  $cat)
-                <a href="{{url('ver-documentos/'. $cat)}}" class="list-group-item">{{$cat}}</a>
+                <a href="{{url('ver-documentos/'. $cat)}}" class="list-group-item">
+                    <i class="fa fa-folder"></i>
+                    {{$cat}}
+                </a>
             @empty            
             @endforelse
         </div>
