@@ -43,6 +43,7 @@ Route::group(['middleware' => 'web'], function () {
 		Route::any('/addComentarioTicket' , 'AjaxController@addComentarioTicket');
 		Route::any('/deleteComentarioTicket/{id}' , 'AjaxController@deleteComentarioTicket');
 		Route::any('/setGuardianTicket/{id}' , 'AjaxController@setGuardianTicket');
+		Route::any('/setVencimiento/{id}' , 'AjaxController@setVencimientoTicket');
 		Route::any('/getUsersbyCategoria' , 'AjaxController@getUsersbyCategoria');
 	});
 

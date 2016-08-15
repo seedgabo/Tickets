@@ -7,7 +7,8 @@
             
             jQuery.datetimepicker.setLocale('es');
             jQuery('.datetimepicker').datetimepicker({format:'Y-m-d H:i:s',mask:true, allowBlank : true});
-            jQuery('.datetimepicker').val("{{Carbon\Carbon::now()->format('Y-m-d H:i:s')}}");
+            
+            jQuery('.datetimepicker:not(.pre)').val("{{Carbon\Carbon::now()->format('Y-m-d H:i:s')}}");
 
             $('.datatable tfoot th').each( function () {
                     var title = $(this).text();

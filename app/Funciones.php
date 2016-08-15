@@ -12,24 +12,6 @@ use Symfony\Component\HttpKernel\Tests\HttpCache\request;
 class Funciones
 {
 
-    public static function  utf8_encode_deep(&$input)
-    {
-        if (is_string($input)) {
-            $input = utf8_encode($input);
-        } else if (is_array($input)) {
-            foreach ($input as &$value) {
-                Funciones::utf8_encode_deep($value);
-            }
-
-            unset($value);
-        } else if (is_object($input)) {
-            $vars = array_keys(get_object_vars($input));
-
-            foreach ($vars as $var) {
-                Funciones::utf8_encode_deep($input->$var);
-            }
-        }
-    }
 
     /**
      * Traduce una fecha a español según el formato dado
@@ -64,23 +46,6 @@ class Funciones
 
 		return $texto;
 	}
-
-    public static function  printable($array)
-    {
-     if (count($array) > 0)
-     {
-         $tabla =   "<table>
-         <thead>
-            <tr>
-              <th>" . implode('</th><th>', array_keys(current($array))) . "</th></tr></thead> <tbody>";
-              foreach ($array as $row):
-                array_map('htmlentities', $row);
-            $tabla.="  <tr><td>" . implode('</td><td>', $row) ."</td> </tr>";
-            endforeach;
-            $tabla.="</tbody></table>";
-        }
-        return $tabla;
-    }
 
 
     public static function  getEmpresa()
@@ -222,44 +187,17 @@ class Funciones
             return $url = asset('/img/user.jpg');
     }
 
-
-    /**
-     * Obtener el path para las referencias de productos a traves de la variable de sessión Empresas
-     * @return String Path con la dirección a la base de datos de la empresa
-     */
-    public static function getPathRef()
+    public static function sendMailUpdateVencimiento($user,$guardian, $ticket)
     {
-        $empresa =Empresas::find(Session::get('empresa'));
-        return $empresa->direccion_base_de_datos . "/IN.SIA/REFEREN.DBF";
+        Mail::send('emails.changeVencimiento', ["guardian" =>  $guardian,"ticket"=>$ticket,"user" => $user], function ($m)   use ($guardian)
+        {
+            $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
+            $m->to($guardian->email, $guardian->nombre)->subject('Nueva Fecha de Vencimiento');
+        });
+        
     }
-
-    /**
-     * Obtiene el path hace la base de datos de pedidos
-     * @return String Path haca la base de datos de pedidos
-     */
-    public static function getPathPed()
+    public static function UpdateVencimiento($user,$guardian, $ticket)
     {
-        $empresa =Empresas::find(Session::get('empresa'));
-        return $empresa->direccion_base_de_datos . "/IN.SIA/PEDIDOS.DBF";
-    }
-
-    /**
-     * Obtiene el path hace la base de datos de Clientes
-     * @return String Path haca la base de datos de Clientes
-     */
-    public static function getPathCli()
-    {
-        $empresa =Empresas::find(Session::get('empresa'));
-        return $empresa->direccion_tabla_clientes . "/MAE_TER.DBF";
-    }
-
-    /**
-     * Obtiene el path hacia la direccion de base de datos de Cartera
-     * @return String Path hacia la direccion a base de datos Cartera
-     */
-    public static function getPathCar()
-    {
-        $empresa =Empresas::find(Session::get('empresa'));
-        return $empresa->direccion_base_de_datos . "/IN.SIA/CARTERA.DBF";
+        return;
     }
 }

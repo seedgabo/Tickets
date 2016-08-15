@@ -38,6 +38,15 @@ class AjaxController extends Controller
         \App\Funciones::sendMailNewGuardian(User::find($request->input('guardian_id')),User::find(Auth::user()->id),$ticket);
         return $ticket;
     }
+    public function setVencimientoTicket(Request $request, $id)
+    {
+        $ticket = Tickets::find($id);
+        $ticket->vencimiento = $request->input('vencimiento');
+        $ticket->save();
+        \App\Funciones::sendMailUpdateVencimiento($ticket->guardian, $ticket->user,$ticket);
+        \App\Funciones::UpdateVencimiento($ticket->guardian, $ticket->user,$ticket);        
+        return $ticket;
+    }
 
     public function addComentarioTicket(Request $request)
     {

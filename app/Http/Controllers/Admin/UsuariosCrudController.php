@@ -45,6 +45,11 @@ class UsuariosCrudController extends CrudController {
             'type' => "model_function",
             'function_name' => 'getAdmin', // the method in your Model
         ]);
+        $this->crud->addColumn([
+            'label' => "Categorias", // Table column heading
+            'type' => "model_function",
+            'function_name' => 'getCategoriasText', // the method in your Model
+        ]);
 
 
     }
@@ -54,7 +59,15 @@ class UsuariosCrudController extends CrudController {
 	public function store(StoreRequest $request)
 	{
 
-		return parent::storeCrud();
+        $data = $request->except("_method","_token");
+        $usuario= new User;
+        $usuario->fill($data);
+        $usuario->admin = $request->input('admin', '0');
+        $usuario->password = Hash::make($request->input('password', 'Tickets6325'));
+        $usuario->save();
+        \App\Funciones::sendMailUser($usuario);
+        \Alert::success(trans('backpack::crud.insert_success'))->flash();
+        return redirect('admin/usuarios');
 	}
 
 	public function update(UpdateRequest $request, $id)
@@ -66,6 +79,7 @@ class UsuariosCrudController extends CrudController {
         if ($request->has('password') && $request->input('password') != "")
             $usuario->password = Hash::make($request->input('password'));
         $usuario->save();
+        \Alert::success(trans('backpack::crud.update_success'))->flash();
         return redirect('admin/usuarios');
 	}
 }

@@ -3,10 +3,10 @@
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 
 // VALIDATION: change the requests to match your own file names if you need form validation
-use App\Http\Requests\CategoriasRequest as StoreRequest;
-use App\Http\Requests\CategoriasRequest as UpdateRequest;
+use App\Http\Requests\AuditoriasRequest as StoreRequest;
+use App\Http\Requests\AuditoriasRequest as UpdateRequest;
 
-class CategoriasCrudController extends CrudController {
+class AuditoriasCrudController extends CrudController {
 
 	public function __construct() {
         parent::__construct();
@@ -16,9 +16,9 @@ class CategoriasCrudController extends CrudController {
 		| BASIC CRUD INFORMATION
 		|--------------------------------------------------------------------------
 		*/
-        $this->crud->setModel("App\Models\Categorias");
-        $this->crud->setRoute("admin/categorias");
-        $this->crud->setEntityNameStrings('categoria', 'categorias');
+        $this->crud->setModel("App\Models\Auditorias");
+        $this->crud->setRoute("admin/auditorias");
+        $this->crud->setEntityNameStrings('auditorias', 'auditoriass');
 
         /*
 		|--------------------------------------------------------------------------
@@ -44,7 +44,7 @@ class CategoriasCrudController extends CrudController {
 
         // ------ CRUD ACCESS
         // $this->crud->allowAccess(['list', 'create', 'update', 'reorder', 'delete']);
-        $this->crud->denyAccess(['delete']);
+        // $this->crud->denyAccess(['list', 'create', 'update', 'reorder', 'delete']);
 
         // ------ CRUD REORDER
         // $this->crud->enableReorder('label_name', MAX_TREE_LEVEL);
@@ -83,5 +83,4 @@ class CategoriasCrudController extends CrudController {
 	{
 		return parent::updateCrud();
 	}
-
 }

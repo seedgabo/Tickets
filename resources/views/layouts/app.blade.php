@@ -18,7 +18,8 @@
                     <i class="fa fa-bars"></i>
                 </button>
                 <a class="navbar-brand" href="{{url('')}}">
-                    <img src="{{asset('img/logo.png')}}" alt="logo" class="img-responsive" style="height: 50px">
+                    <img src="{{asset('img/logo.png')}}" alt="logo" class="img-responsive" style="height: 45px; display:inline">
+                    <b>DUFLO</b>SA
                 </a>
             </div>
             <!-- /.navbar-header -->

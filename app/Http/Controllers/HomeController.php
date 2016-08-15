@@ -196,6 +196,7 @@ class HomeController extends Controller
     public function getDocumento(Request $request, $id)
     {
         $documento = \App\Models\Documentos::find($id);
+        \App\Models\Auditorias::Create(['user_id' => Auth::user()->id, 'documento_id'=> $id , 'tipo' => 'descarga']);
         return response()->download(storage_path("documentos/" . $documento->id  ."/" . $documento->archivo), $documento->archivo);
     }
 

@@ -50,6 +50,13 @@
 				</div>
 				@endif
 				@endif
+				@if(Auth::user()->id == $ticket->user_id)
+				<div class="col-md-3 form-inline row">
+					{!! Form::label('vencimiento', 'Vencimiento:') !!}
+					{!! Form::text('vencimiento', $ticket->vencimiento,['id'=> 'vencimiento','class' => 'form-control pre datetimepicker', 'onblur' => "cambiarVencimiento($ticket->id , this.value)"]) !!}
+					<button type="button" class="btn">Cambiar</button>
+				</div>
+				@endif
 				<p class="text-right"><span class="text-info">Creado por:</span> {{ $ticket->user->nombre }}</p>
 				<p class="text-right"><span class="text-info">Asignado a:</span> {{ $ticket->guardian->nombre }}</p>
 				<small style="color:red">Vence el: {{$ticket->vencimiento ? \App\Funciones::transdate($ticket->vencimiento) : "No Vence"}}</small> <br>
@@ -161,6 +168,23 @@
 				$("#estado").val(data);
 				location.reload(true); 
 			})
+		}
+
+		function cambiarVencimiento (id, vencimiento)
+		{
+			if(vencimiento != "{{$ticket->vencimiento}}")
+				$.post("{{url('ajax/setVencimiento/')}}" +"/" + id, {vencimiento: vencimiento},
+					function(data)
+					{
+						$.toast({
+							heading: 'Hecho',
+							text: "Vencimiento Actualizado",
+							showHideTransition: 'slide',
+							icon: 'success',
+							position: 'mid-center',
+						})
+						location.reload(true); 
+					})	
 		}
 
 		function cambiarGuardian(id, guardian_id)
