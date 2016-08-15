@@ -5,14 +5,14 @@ namespace App;
 use App\Empresas;
 use App\Models\CategoriasTickets;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Backpack\CRUD\CrudTrait; 
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+    use CrudTrait; 
+    use HasRoles; 
+
     protected $fillable = [
         'nombre', 'email','categorias_id' ,'admin'
     ];

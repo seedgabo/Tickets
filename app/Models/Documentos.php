@@ -5,6 +5,7 @@ namespace App\Models;
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Backpack\CRUD\CrudTrait;
+use Illuminate\Support\Facades\DB;
 class documentos extends Model
 {
     use SoftDeletes;
@@ -60,5 +61,17 @@ class documentos extends Model
 
     public function getLinkArchivo(){
         return "<a href='" . url('getDocumento/'. $this->id). "'> Ver Archivo </a>";
+    }
+
+    public static function getDescargasByDocumentos($limit)
+    {
+       return \App\Models\Auditorias::select(DB::raw('count(*) as count'),'documentos.titulo')
+       ->where('tipo',"=","descarga")
+        ->groupBy('documento_id')
+        ->rightJoin('documentos','documentos.id',"=",'auditorias.documento_id')
+        ->orderBy('count','desc')
+        ->limit($limit)
+        ->get();
+
     }
 }

@@ -63,19 +63,7 @@
 
 		{!! Form::submit("Guardar", ['class' => 'btn btn-block btn-primary']) !!}
 		{!! Form::close() !!}
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		 <h5>Ecanea el siguiente codigo de barra con tu telefono para condfigurar el usuario de manera mas facil</h5>
-		<div class="col-md-6 col-md-offset-3" id="qrcode"></div>
-		<script type="text/javascript">
-			   var codigo  = { url: '{{url("")}}' , username: '{{Auth::user()->email}}' , token : '{{Crypt::encrypt(Auth::user()->id)}}' }
-				var qrcode = new QRCode("qrcode", {
-					text: JSON.stringify(codigo)
-				});
-		</script>
+
 		<div class="col-md-6">
 			<a href="" class="btn btn-ñg btn-success"> <i class="fa fa-android fa-2x"></i> Obtener para android</a>
 		</div>

@@ -5,6 +5,8 @@ use Backpack\CRUD\app\Http\Controllers\CrudController;
 use App\Http\Requests\UsuariosRequest as StoreRequest;
 use App\Http\Requests\UsuariosRequest as UpdateRequest;
 
+use Illuminate\Support\Facades\Hash;
+
 class UsuariosCrudController extends CrudController {
 
 	public function __construct() {
@@ -60,7 +62,7 @@ class UsuariosCrudController extends CrudController {
 	{
 
         $data = $request->except("_method","_token");
-        $usuario= new User;
+        $usuario= new \App\Models\Usuarios;
         $usuario->fill($data);
         $usuario->admin = $request->input('admin', '0');
         $usuario->password = Hash::make($request->input('password', 'Tickets6325'));

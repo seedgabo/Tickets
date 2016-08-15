@@ -172,6 +172,8 @@ return [
         Backpack\Base\BaseServiceProvider::class,
         Backpack\CRUD\CrudServiceProvider::class,
         Backpack\Generators\GeneratorsServiceProvider::class,
+        Backpack\PermissionManager\PermissionManagerServiceProvider::class,
+        
     ],
 
     /*

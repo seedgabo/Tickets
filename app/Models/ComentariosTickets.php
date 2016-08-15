@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 class ComentariosTickets extends Model
 {
     use SoftDeletes;
@@ -47,6 +48,16 @@ class ComentariosTickets extends Model
         {
             return  asset("archivos/ComentariosTickets/" . $this->id . "." . explode(".", $this->archivo)[1]);
         }
+    }
+
+    public static function countByTickets($limit)
+    {
+      return   \App\Models\ComentariosTickets::select(Db::raw('count(*) as count'),'tickets.titulo')
+        ->groupBy("ticket_id")
+        ->rightjoin("tickets","tickets.id","=","comentarios_tickets.ticket_id")
+        ->orderby('count','desc')
+        ->limit($limit)
+        ->get();
     }
 
 }
