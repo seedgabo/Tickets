@@ -31,11 +31,11 @@ class ApiController extends Controller
      * @param  Request     $request [description]
      * @return [type]               [description]
      */
-    public function getEmpresas (Request $request){
+    public function getCategorias (Request $request){
 
-        $empresas = Auth::user()->empresas();
+        $empresas = Auth::user()->categorias();
 
-        return \Response::json($empresas, 200);
+        return \Response::json($categorias, 200);
     }
 
     /**
@@ -45,11 +45,10 @@ class ApiController extends Controller
      * @param  [type]      $empresa [description]
      * @return [type]               [description]
      */
-    public function getClientes (Request $request, $empresa){
+    public function getTickets (Request $request, $categoria){
 
-        $request->session()->put('empresa',$empresa);
-        $clientes = \App\Cliente::where("empresa_id",$empresa)->orWhereNull("empresa_id")->get();
-        return \Response::json($clientes, 200);
+        $tickets = \App\Models\Tickets::where("categoria_id",$categoria);
+        return \Response::json($tickets, 200);
     }
 
     /**

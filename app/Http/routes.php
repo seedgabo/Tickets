@@ -84,6 +84,12 @@ Route::group(['middleware' => 'web'], function () {
 	]);
 
 	Route::group(['prefix' => 'api', 'middleware' => ['api','auth.basic.once']], function(){
+			Route::get('login', 'ApiController@doLogin');
+			Route::get('getCategorias', 'ApiController@getCategorias');
+			Route::get('documentos/getCategorias', 'ApiController@getCategoriasDocumentos');
+			Route::get('{categoria}/getTickets', 'ApiController@getTickets');
+			Route::get('{categoria}/getDocumentos', 'ApiController@getDocumentos');
+			
 	});
 	Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin']], function(){
 		CRUD::resource('categorias', 'Admin\CategoriasCrudController');
