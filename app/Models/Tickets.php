@@ -99,4 +99,8 @@ class Tickets extends Model
     public function user(){
         return $this->belongsTo("\App\User","user_id");
     }
+
+    public function comentarios(){
+        return $this->hasMany("\App\Models\ComentariosTickets","ticket_id","id");
+    }
 }

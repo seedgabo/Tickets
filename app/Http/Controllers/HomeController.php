@@ -31,7 +31,7 @@ class HomeController extends Controller
         if (Auth::check()) {
             $categorias = Auth::user()->categorias();
             $tickets = Tickets::where("guardian_id",Auth::user()->id)->take(6)->get();
-            $documentos = Documentos::where("activo","=","1")->orderby("updated_at","desc")->take(6)->get();
+            $documentos = Documentos::where("activo","=","1")->orderby("updated_at","desc")->with('categoria')->take(6)->get();
             return view('menu')->withCategorias($categorias)->withTickets($tickets)->withDocumentos($documentos);
         }
         else{
@@ -152,13 +152,17 @@ class HomeController extends Controller
 
     public function listarDocumentos (Request $request, $categoria)
     {
-        $documentos = \App\Models\Documentos::where("categoria", "=", $categoria)->where("activo","=","1")->get();
-        return view('ver-documentos')->withDocumentos($documentos)->withCategoria($categoria);
+        $categorias = \App\Models\CategoriaDocumentos::where("parent_id","=",$categoria)
+        ->distinct()->get();
+        $documentos = \App\Models\Documentos::where("categoria_id", "=", $categoria)->where("activo","=","1")->get();
+        return view('ver-documentos')->withDocumentos($documentos)->withCategoria($categoria)->withCategorias($categorias);
     }
 
     public function listarCategorias (Request $request)
     {
-        $categorias = \App\Models\Documentos::distinct()->pluck("categoria");
+        $categorias = \App\Models\CategoriaDocumentos::where("parent_id","=","0")
+        ->orwhereNull("parent_id")
+        ->distinct()->get();
         return view('ver-categoriasDocumentos')->withCategorias($categorias);
     }
 
@@ -204,12 +208,17 @@ class HomeController extends Controller
     {
         $query = $request->input('query');
         $documentos = \App\Models\Documentos::where("activo","=","1")->where("titulo","like","%".$query."%")
-        ->orwhere("descripcion","like","%".$query."%")->orwhere("categoria","like","%".$query."%")->get();
+        ->orwhere("descripcion","like","%".$query."%")->get();
 
-        $tickets = Tickets::where("titulo","like","%".$query."%")->orwhere("contenido","like","%".$query."%")->whereIn("categoria_id",
-        Auth::user()->categorias()->pluck("id"))->get();
+        $tickets = Tickets::where("titulo","like","%".$query."%")
+        ->orwhere("contenido","like","%".$query."%")
+        ->whereIn("categoria_id",Auth::user()->categorias()->pluck("id"))
+        ->get();
 
-        $categorias = CategoriasTickets::where("nombre","like", "%". $query ."%")->get();
+        $categorias = CategoriasTickets::where("nombre","like", "%". $query ."%")
+        ->whereIn("id",Auth::user()->categorias()->pluck("id"))
+        ->get();
+        
         return view('busqueda')->withTickets($tickets)->withDocumentos($documentos)->withCategorias($categorias);
     }
 }

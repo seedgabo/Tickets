@@ -22,7 +22,7 @@ class documentos extends Model
         'descripcion',
         'version',
         'editable',
-        'categoria',
+        'categoria_id',
         "activo",
         "archivo"
     ];
@@ -36,8 +36,8 @@ class documentos extends Model
         'titulo' => 'string',
         'descripcion' => 'string',
         'descripcion' => 'string',
-        'categorias' => 'string',
-        'version' => 'integer',
+        'categorias_id' => 'integer',
+        'version' => 'string',
         'editable' => 'boolean'
     ];
 
@@ -51,6 +51,10 @@ class documentos extends Model
         'descripcion' => 'min:3|max:50|text'
     ];
 
+	public function categoria()
+	{
+		return $this->belongsTo('\App\Models\CategoriaDocumentos','categoria_id','id');
+	}
 
     public function getActivoText(){
         return $this->activo == 1 ? 'Activo' : '<span style="color:red">Inactivo</span>';

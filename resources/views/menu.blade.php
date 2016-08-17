@@ -40,7 +40,11 @@
                     </li>
                   @forelse ($documentos as $documento)
                     <a class="list-group-item" href="{{url('getDocumento/'. $documento->id)}}">
-                      <span class="badge">{{$documento->categoria}}</span>
+                      <span class="badge">
+                        @if(isset($documento->categoria))
+                          {{$documento->categoria->nombre}}
+                        @endif
+                        </span>
                        {{ $documento->titulo }}
                     </a>
                   @empty

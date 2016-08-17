@@ -11,28 +11,32 @@ class DocumentoCrudController extends CrudController {
 	public function __construct() {
         parent::__construct();
 
-        /*
-		|--------------------------------------------------------------------------
-		| BASIC CRUD INFORMATION
-		|--------------------------------------------------------------------------
-		*/
+
         $this->crud->setModel("App\Models\Documentos");
         $this->crud->setRoute("admin/documentos");
         $this->crud->setEntityNameStrings('documento', 'documentos');
 
-        /*
-		|--------------------------------------------------------------------------
-		| BASIC CRUD INFORMATION
-		|--------------------------------------------------------------------------
-		*/
+
+
         $this->crud->addColumn([
             'label' => '#',
             'name'  => 'id',
             'type'  => 'text'
         ]);
-
+        
 		$this->crud->setFromDb();
 
+
+        $this->crud->addColumn(
+            [
+            // 1-n relationship
+            'label' => "Categoría", // Table column heading
+            'type' => "select",
+            'name' => 'Categoria', // the method that defines the relationship in your Model
+            'entity' => 'categoria', // the method that defines the relationship in your Model
+            'attribute' => "nombre", // foreign key attribute that is shown to user
+            'model' => "App\Models\CategoriaDocumentos", // foreign key model
+        ]); 
         $this->crud->addColumn([
             'name'=> 'Activo',
             'label' => "Activo", // Table column heading
@@ -53,8 +57,8 @@ class DocumentoCrudController extends CrudController {
             'function_name' => 'getLinkArchivo'
         ]);
 
-        $this->crud->removeColumns(['activo','archivo', 'editable']);
-
+        $this->crud->removeColumns(['activo','archivo', 'editable','categoria_id']);
+        
         $this->crud->addField([
             'name' => 'editable',
             'type' => 'checkbox',
@@ -71,7 +75,7 @@ class DocumentoCrudController extends CrudController {
             'label'=>  'Descripcion'
         ],'both'); 
         $this->crud->addField([
-            'name' => 'categoria',
+            'name' => 'categoria_id',
             'type' => 'categorias_documentos',
             'label'=>  'Categoría',
         ],'both'); 

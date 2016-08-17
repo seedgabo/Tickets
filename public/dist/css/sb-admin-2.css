@@ -5,11 +5,61 @@
  */
 
 body {
-    background-color: #f8f8f8;
+    background-color: #fff;
 }
 
 #wrapper {
     width: 100%;
+}
+.navbar-collapse{
+    background: #D33724;
+    z-index: 999;
+}
+
+#wrapper > nav > div.navbar-collapse > div > div{
+    padding-top: 10px;
+    background: white;
+}
+#wrapper > nav > div.navbar-collapse > div
+{
+    z-index: -999;
+}
+#wrapper > nav > div.navbar-collapse.collapse.in > ul
+{
+    background: #D33724; 
+}
+.navbar-brand, .navbar-brand:hover
+{
+    color: white;
+}
+.nav > li > a:hover, .nav > li > a:focus, .nav > li > a:hover, .nav > li > a:hover , .nav > li > a:active,.nav .open > a, .nav .open > a:hover, .nav .open > a:focus{
+    background: #D33724; 
+}
+#wrapper > nav > div.navbar-collapse > ul > li.dropdown.open > ul > li  a  div, #wrapper > nav > div.navbar-collapse > ul > li.dropdown.open > ul > li:nth-child(3) > a{
+    color: black;
+}
+@media (max-width:761px){
+    #wrapper > nav > div.navbar-collapse > div
+    {
+        z-index: 999;
+        background: white;
+    }
+    .navbar-collapse
+    {
+        background: white;
+    }
+}
+
+.navbar-top-links.navbar-right:hover{
+    background: #D33724;
+}
+.navbar-top-links.navbar-right  li  a 
+{
+    color: white;
+}
+#wrapper > nav > div.navbar-collapse > ul > li.dropdown.text-center.open ul li a
+{
+    color: black;
 }
 
 #page-wrapper {
@@ -99,7 +149,15 @@ body {
 }
 
 .sidebar ul li a.active {
-    background-color: #eee;
+    background-color: #D33724;
+    color:white;
+}
+.sidebar ul li a:hover {
+    background-color: #D33724;
+    color: white;
+}
+.sidebar ul li a {
+    color: #D33724;
 }
 
 .sidebar .arrow {

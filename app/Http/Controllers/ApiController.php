@@ -33,7 +33,7 @@ class ApiController extends Controller
      */
     public function getCategorias (Request $request){
 
-        $empresas = Auth::user()->categorias();
+        $categorias = Auth::user()->categorias();
 
         return \Response::json($categorias, 200);
     }
@@ -47,9 +47,32 @@ class ApiController extends Controller
      */
     public function getTickets (Request $request, $categoria){
 
-        $tickets = \App\Models\Tickets::where("categoria_id",$categoria);
+        $tickets = \App\Models\Tickets::where("categoria_id",$categoria)
+        ->with("user")->with("guardian")->withCount('comentarios')
+        ->get();
         return \Response::json($tickets, 200);
     }
+
+     public function getCategoriasDocumentos (Request $request){
+
+        $categorias = \App\Models\Documentos::distinct()->pluck("categoria");
+        return \Response::json($categorias, 200);
+    }
+
+    public function getDocumentos(Request $request, $categoria){
+        $documentos = \App\Models\Documentos::where("activo","=","1")->where("categoria","=",$categoria)->get();
+        return \Response::json($documentos, 200);
+    }
+
+    public function getTicket (Request $request, $ticket_id){
+
+        $ticket = \App\Models\Tickets::where("id","=",$ticket_id)
+        ->with("user")->with("guardian")
+        ->first();
+        $comentarios = $ticket->comentarios()->with("user")->get();
+        return \Response::json(['comentarios' => $comentarios, 'ticket' => $ticket], 200);
+    }
+
 
     /**
      * [getProductos description]

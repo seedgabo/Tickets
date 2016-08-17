@@ -88,16 +88,25 @@ Route::group(['middleware' => 'web'], function () {
 			Route::get('getCategorias', 'ApiController@getCategorias');
 			Route::get('documentos/getCategorias', 'ApiController@getCategoriasDocumentos');
 			Route::get('{categoria}/getTickets', 'ApiController@getTickets');
+			Route::get('getTicket/{ticket_id}', 'ApiController@getTicket');			
 			Route::get('{categoria}/getDocumentos', 'ApiController@getDocumentos');
 			
 	});
+
 	Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin']], function(){
 		CRUD::resource('categorias', 'Admin\CategoriasCrudController');
 		CRUD::resource('usuarios', 'Admin\UsuariosCrudController');
 		CRUD::resource('tickets', 'Admin\TicketsCrudController');
 		CRUD::resource('documentos', 'Admin\DocumentoCrudController');
+		CRUD::resource('categoriadocumentos', 'Admin\CategoriaDocumentosCrudController');
 	});
 	
 });
 
 Route::get('api/auth', ['middleware' => 'auth.basic.once', 'uses' => 'ApiController@doLogin']);
+
+Route::get('getListaCategorias', function(Request $request) {
+
+	return view('lista-documentos-tree');
+
+});

@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreatedocumentosTable extends Migration
+class CreateDocumentosTable extends Migration
 {
 
     /**
@@ -17,7 +17,7 @@ class CreatedocumentosTable extends Migration
             $table->increments('id');
             $table->string('titulo');
             $table->string('descripcion');
-            $table->string('categorias')->nullable();
+            $table->integer('categoria_id')->nullable();
             $table->integer('version');
             $table->boolean('editable');
             $table->boolean('activo');

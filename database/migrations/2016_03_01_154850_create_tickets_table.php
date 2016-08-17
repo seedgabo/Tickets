@@ -19,7 +19,10 @@ class CreateTicketsTable extends Migration
 			$table->text('contenido');
             $table->string('user_id');
             $table->string('guardian_id')->nullable();
-			$table->enum('estado', ['abierto', 'completado', 'en curso', ' rechazado','atrasado','vencido']);
+            $table->string('mail_alert_24')->nullable();
+            $table->string('mail_alert_3')->nullable();
+            $table->string('mail_alert_vencido')->nullable();
+			$table->string('estado')->default('abierto');
 			$table->string('categoria_id');
 			$table->string('archivo')->nullable();
             $table->boolean("transferible")->default(true);
