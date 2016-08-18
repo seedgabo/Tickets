@@ -23,7 +23,7 @@ class CategoriasTickets extends Model
         "parent_id"
         ];
 
-   
+
     protected $casts = [
             "nombre" => "string",
     		"descripción" => "string",
@@ -34,7 +34,7 @@ class CategoriasTickets extends Model
             "nombre" => "required|min:3|max:50",
     		"descripción" => "min:3",
         ];
-        
+
 
     public function parent()
     {
@@ -45,7 +45,7 @@ class CategoriasTickets extends Model
     {
         return $this->hasMany(get_class(), 'parent_id');
     }
-    
+
     public function tickets()
     {
         return $this->hasMany('App\Models\Tickets',"categoria_id");
@@ -75,7 +75,7 @@ class CategoriasTickets extends Model
         }
         return $temp_array;
     }
-    
+
     public static function radio_menu($array,$parent_id = 0 ,$value= [], $disabled = [], $required = false)
     {
         $menu_html = '<ul class="fa-ul">';
@@ -139,8 +139,8 @@ class CategoriasTickets extends Model
     public static function menu($array,$parent_id = 0)
     {
         $menu_html = '<ol class="fa-ul"';
-        if($parent_id == 0) $menu_html .= 'id="accordion"'; 
-        $menu_html .= '>'; 
+        if($parent_id == 0) $menu_html .= 'id="accordion"';
+        $menu_html .= '>';
         foreach($array as $element)
         {
             if($element['parent_id']==$parent_id)
@@ -154,4 +154,14 @@ class CategoriasTickets extends Model
         return $menu_html;
     }
 
+    public static function menu_tickets($categoria_id = null)
+	{
+		$tickets = \App\Models\Tickets::where("categoria_id","=",$categoria_id)->pluck("titulo","id");
+		$menu = "<ul class='fa-ul'>";
+		foreach ($tickets as $key => $value)
+		{
+			$menu .= "<li><i class='fa fa-file fa-li' style='color:red;'></i> ". $value ."</li>";
+		}
+		return $menu ."</ul>";
+	}
 }

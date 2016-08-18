@@ -43,7 +43,7 @@ class CategoriaDocumentos extends Model
 		}
 		return $temp_array;
 	}
-	
+
 	public static function radio_menu($array,$parent_id = 0 ,$value= [], $disabled = [], $required = false)
 	{
 		$menu_html = '<ul class="fa-ul">';
@@ -87,8 +87,8 @@ class CategoriaDocumentos extends Model
 	public static function menu($array,$parent_id = 0)
 	{
 		$menu_html = '<ol class="fa-ul"';
-		if($parent_id == 0) $menu_html .= 'id="accordion"'; 
-		$menu_html .= '>'; 
+		if($parent_id == 0) $menu_html .= 'id="accordion"';
+		$menu_html .= '>';
 		foreach($array as $element)
 		{
 			if($element['parent_id']==$parent_id)
@@ -107,7 +107,7 @@ class CategoriaDocumentos extends Model
 	{
 		$documentos = \App\Models\Documentos::where("categoria_id","=",$categoria_id)->pluck("titulo","id");
 		$menu = "<ol class='fa-ul'>";
-		foreach ($documentos as $key => $value) 
+		foreach ($documentos as $key => $value)
 		{
 			$menu .= "<li><i class='fa fa-file fa-li' style='color:red;'></i> ". $value ."</li>";
 		}
