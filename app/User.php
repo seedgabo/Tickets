@@ -20,7 +20,7 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-      protected $casts = [
+  protected $casts = [
         'categorias_id' => 'array',
     ];
 
@@ -38,4 +38,21 @@ class User extends Authenticatable
         else
             return $url = asset('/img/user.jpg');
     }
+
+    public function tickets()
+    {
+        return $this->hasMAny("\App\Models\Tickets","user_id","id");
+    }
+
+    public function  tickets_guardian()
+    {
+        return $this->hasMany("\App\Models\Tickets","guardian_id","id");
+    }
+    
+    public function auditorias()
+    {
+        return $this->hasMany("\App\Models\Auditorias","user_id","id");
+    }
+
+
 }

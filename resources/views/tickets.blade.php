@@ -4,6 +4,20 @@
 		<a class="btn btn-primary" data-toggle="modal" href='#modal-ticket'><i class="fa fa-plus"></i> Crear un Caso</a>
 		<hr>
 	</div>
+	@if(isset($subcategorias) && sizeof($subcategorias) != 0)
+		<h3 class="text-center text-primary">SubCategorias</h3>
+		<div class="list-group">
+			@forelse ($subcategorias as $categoria)
+			<a class="list-group-item" href="{{url('tickets/categoria/'. $categoria->id)}}">
+				<span class="badge">{{$categoria->tickets->count()}}</span>
+				{{ $categoria->nombre }}
+			</a>
+			@empty
+			@endforelse
+		</div>
+		<hr>
+		<h3 class="text-center text-primary">Casos</h3>
+	@endif
 	<div class="table-responsive">
 		<table class="table table-hover datatable">
 			<thead>

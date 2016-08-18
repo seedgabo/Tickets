@@ -29,7 +29,7 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         if (Auth::check()) {
-            $categorias = Auth::user()->categorias();
+            $categorias = Auth::user()->categorias()->wherein("parent_id",["",null]);
             $tickets = Tickets::where("guardian_id",Auth::user()->id)->take(6)->get();
             $documentos = Documentos::where("activo","=","1")->orderby("updated_at","desc")->with('categoria')->take(6)->get();
             return view('menu')->withCategorias($categorias)->withTickets($tickets)->withDocumentos($documentos);
@@ -120,7 +120,8 @@ class HomeController extends Controller
     public function porCategoria(Request $request, $categoria)
     {
         $tickets = CategoriasTickets::find($categoria)->tickets;
-        return  view('tickets')->withTickets($tickets);
+        $subCategorias = CategoriasTickets::find($categoria)->children;
+        return  view('tickets')->withTickets($tickets)->withSubcategorias($subCategorias);
     }
 
     public function ticketVer(Request $request, $id)

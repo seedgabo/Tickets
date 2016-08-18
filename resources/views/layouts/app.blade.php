@@ -101,7 +101,7 @@
                             <li>
                                 <a href="#"><i class="fa fa-list-alt fa-fw"></i> Por Categorias<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
-                                        @foreach (Auth::user()->categorias() as $categoria)
+                                        @foreach (Auth::user()->categorias()->wherein("parent_id",["",null]) as $categoria)
                                             <li>
                                                 <a href="{{url('tickets/categoria/' . $categoria->id)}}"><i class="fa fa-check fa-fw"></i> {{$categoria->nombre}}</a>
                                             </li>

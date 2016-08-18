@@ -26,7 +26,8 @@ class CategoriasTickets extends Model
    
     protected $casts = [
             "nombre" => "string",
-    		"descripción" => "string"
+    		"descripción" => "string",
+            "parent_id" => "integer"
         ];
 
     public static $rules = [
