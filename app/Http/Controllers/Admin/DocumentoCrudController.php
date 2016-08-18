@@ -18,11 +18,11 @@ class DocumentoCrudController extends CrudController {
 
 
 
-        $this->crud->addColumn([
-            'label' => '#',
-            'name'  => 'id',
-            'type'  => 'text'
-        ]);
+        // $this->crud->addColumn([
+        //     'label' => '#',
+        //     'name'  => 'id',
+        //     'type'  => 'text'
+        // ]);
         
 		$this->crud->setFromDb();
 

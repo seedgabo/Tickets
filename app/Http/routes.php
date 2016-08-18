@@ -26,6 +26,7 @@ Route::group(['middleware' => 'web'], function () {
 		Route::get('/tickets/categoria/{categoria}',   ['middleware' => ['auth'], 'uses' =>'HomeController@porCategoria']);
 		Route::get('/ticket/ver/{id}',   ['middleware' => ['auth'], 'uses' =>'HomeController@ticketVer']);
 		Route::get('ticket/eliminar/{id}', ['middleware' => ['auth'], 'uses' =>'HomeController@ticketEliminar']);
+		Route::put('editar-ticket/{id}', ['middleware' => ['auth'], 'uses' => 'HomeController@ticketEditar']);
 
 		Route::get('ver-documentos', ['midleware' => ['auth'], 'uses' => 'HomeController@listarCategorias']);
 		Route::get('ver-documentos/{categoria}', ['midleware' => ['auth'], 'uses' => 'HomeController@listarDocumentos']);
@@ -105,8 +106,10 @@ Route::group(['middleware' => 'web'], function () {
 
 Route::get('api/auth', ['middleware' => 'auth.basic.once', 'uses' => 'ApiController@doLogin']);
 
-Route::get('getListaCategorias', function(Request $request) {
-
+Route::get('getListaCategoriasDocumentos', function(Request $request) {
 	return view('lista-documentos-tree');
+});
 
+Route::get('getListaCategoriasTickets', function(Request $request) {
+	return view('lista-tickets-tree');
 });

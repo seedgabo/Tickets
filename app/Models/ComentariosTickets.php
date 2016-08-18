@@ -20,6 +20,7 @@ class ComentariosTickets extends Model
         "ticket_id",
         "archivo",
         "encriptado",
+        "archvio"
     ];
 
     protected $casts = [

@@ -14,8 +14,8 @@
 </style>
 
 <body>
-    <h2>Vista de Categorias de Documentos</h2> 
-    {!! App\Models\CategoriaDocumentos::menu(\App\Models\CategoriaDocumentos::all(),0) !!}
+    <h2>Vista de Categorias de Tickets</h2> 
+    {!! \App\Models\CategoriasTickets::menu(\App\Models\CategoriasTickets::all(),0) !!}
 </body>
 <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 

@@ -24,7 +24,12 @@
 		<div class="panel panel-primary hover">
 		   <div style="text-transform: uppercase;" class="panel-heading text-center">
 	   		<p class="">{{$ticket->titulo}}
-	    	<span class="label label-warning pull-right">{!! App\Models\CategoriasTickets::find($ticket->categoria_id)->nombre !!}</span>
+	    	<span class="label label-warning pull-right">{!! $ticket->categoria->nombre !!}</span>
+			 @if(Auth::user()->id == $ticket->guardian_id || Auth::user()->id == $ticket->user_id)
+				<a data-toggle="modal" href='#modal-editar' class="label label-primary pull-right">
+					<i class="fa fa-edit"></i> Editar
+				</a>
+			@endif
 	   		</p>
 		   </div>
 			<div class="panel-body">
@@ -72,8 +77,8 @@
 			<div class="list-group-item">
 				{!!$comentario->texto!!}
 				<p class="text-right">
-				{{App\User::find($comentario->user_id)->nombre}}
-				<img src="{{App\Funciones::getUrlProfile(App\User::find($comentario->user_id))}}" alt="" class="img-circle" height="35px">
+				{{$comentario->user->nombre}}
+				<img src="{{$comentario->user->imagen()}}" alt="" class="img-circle" height="35px">
 				@if (Auth::user()->id == $comentario->user_id)
 				 <a class="btn btn-danger btn-xs" href="{{url('ajax/deleteComentarioTicket/'.$comentario->id)}}" title="Borrar Comentario" onclick="return confirm('¿Esta seguro de que quiere eliminar este comentario?')"><i class="fa fa-trash"></i></a>
 				@endif
@@ -152,6 +157,38 @@
 			</div>
 		{!! Form::close() !!}
 	</div>
+ 
+
+	 <div class="modal fade" id="modal-editar">
+		 <div class="modal-dialog modal-lg">
+			 <div class="modal-content">
+				 <div class="modal-header">
+					 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					 <h4 class="modal-title">Editar Contenido del Ticket</h4>
+				 </div>
+				 <div class="modal-body">
+				 <div class="row">
+					{!! Form::model($ticket, ['url' => url('editar-ticket/' . $ticket->id), 'method' => 'PUT', 'class' => 'form-horizontal col-md-10 col-md-offset-1', 'id' => 'editar-ticket']) !!}
+					
+					    <div class="form-group{{ $errors->has('contenido') ? ' has-error' : '' }}">
+					        {!! Form::label('contenido', 'Contenido') !!}
+					        {!! Form::textarea('contenido', null, ['class' => 'form-control', 'required' => 'required', 'id' => 'textarea']) !!}
+					        <small class="text-danger">{{ $errors->first('contenido') }}</small>
+					    </div>
+					
+					
+					{!! Form::close() !!}
+				 </div>
+				 </div>
+				 <div class="modal-footer">
+					 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+					 {!! Form::submit("Agregar", ['class' => 'btn btn-success' , 'form' => 'editar-ticket']) !!}
+				 </div>
+			 </div>
+		 </div>
+	 </div>
+ 
+
 	<script>
 		function cambiarEstado(id, estado)
 		{

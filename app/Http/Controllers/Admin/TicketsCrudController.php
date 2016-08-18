@@ -18,7 +18,7 @@ class TicketsCrudController extends CrudController {
 		*/
         $this->crud->setModel("App\Models\Tickets");
         $this->crud->setRoute("admin/tickets");
-        $this->crud->setEntityNameStrings('ticket', 'tickets');
+        $this->crud->setEntityNameStrings('Caso', 'Casos');
 
         /*
 		|--------------------------------------------------------------------------
@@ -33,19 +33,21 @@ class TicketsCrudController extends CrudController {
             'name' => 'user_id',
             'type' => 'select',
             'entity' => 'user',
+            'label' => 'Creador',
             'attribute' => 'nombre',
             'model' =>'App\Models\usuarios'
         ], 'both');
         $this->crud->addField([
             'name' => 'guardian_id',
             'type' => 'select',
+            'label' => 'Responsable',
             'entity' => 'guardian',
             'attribute' => 'nombre',
             'model' =>'App\Models\usuarios'
         ], 'both');
         $this->crud->addField([
             'name' => 'categoria_id',
-            'type' => 'select',
+            'type' => 'categorias_ticket_radio',
             'label' => 'Categoria',
             'entity' => 'categoria',
             'attribute' => 'nombre',

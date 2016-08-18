@@ -9,29 +9,17 @@ class Usuarios extends Model
 {
 	use CrudTrait;
 
-     /*
-	|--------------------------------------------------------------------------
-	| GLOBAL VARIABLES
-	|--------------------------------------------------------------------------
-	*/
-
 	protected $table = 'users';
 	protected $primaryKey = 'id';
-	// public $timestamps = false;
-	// protected $guarded = ['id'];
 	protected $fillable = ["nombre","email","categorias_id","admin"];
-	// protected $hidden = [];
-    // protected $dates = [];
-	   protected $casts = [
+
+    protected $casts = [
         'categorias_id' => 'array',
 		'admin' => 'boolean'
     ];
 
-	/*
-	|--------------------------------------------------------------------------
-	| FUNCTIONS
-	|--------------------------------------------------------------------------
-	*/
+
+
 	public function getAdmin(){
 		if($this->admin == 1)
 		 	return "Administrador";
@@ -51,30 +39,11 @@ class Usuarios extends Model
         else
             return $url = asset('/img/user.jpg');
     }
-	/*
-	|--------------------------------------------------------------------------
-	| RELATIONS
-	|--------------------------------------------------------------------------
-	*/
-	public function Categorias()
+
+
+	public function getCategorias()
     {
         return CategoriasTickets::wherein('id', $this->categorias_id)->get();
     }
-	/*
-	|--------------------------------------------------------------------------
-	| SCOPES
-	|--------------------------------------------------------------------------
-	*/
 
-	/*
-	|--------------------------------------------------------------------------
-	| ACCESORS
-	|--------------------------------------------------------------------------
-	*/
-
-	/*
-	|--------------------------------------------------------------------------
-	| MUTATORS
-	|--------------------------------------------------------------------------
-	*/
 }

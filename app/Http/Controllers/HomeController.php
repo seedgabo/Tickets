@@ -150,6 +150,25 @@ class HomeController extends Controller
         return back();
     }
 
+    public function ticketEditar(Request $request, $id)
+    {
+        $ticket =Tickets::find($id);
+        if($ticket->user_id == Auth::user()->id || Auth::user()->id == $ticket->guardian_id )
+        {
+            $ticket->contenido = $request->input('contenido');
+            \App\Models\ComentariosTickets::Create(['ticket_id' => $ticket->id, 'user_id' => Auth::user()->id,
+                'texto' => "<b style='color:green'><em> ". Auth::user()->nombre . " actualizó el contenido del ticket </em></b>"
+                ]);
+            $ticket->save();
+            \Flash::success("Contenido Actualizado");
+        }
+        else
+        {
+            \Flash::error("No tiene los permisos necesarios");
+        }
+        return back();
+    }
+
     public function listarDocumentos (Request $request, $categoria)
     {
         $categorias = \App\Models\CategoriaDocumentos::where("parent_id","=",$categoria)

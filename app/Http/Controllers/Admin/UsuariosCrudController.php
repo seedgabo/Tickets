@@ -27,13 +27,14 @@ class UsuariosCrudController extends CrudController {
 		|--------------------------------------------------------------------------
 		*/
 		$this->crud->setFromDb();
+        $this->crud->removeField('categorias_id','both');
         $this->crud->removeColumn('categorias_id');
         $this->crud->removeColumn('admin');
 
         $this->crud->addField([
-            'name' => 'categorias_id',
+            'name' => 'categorias',
             'label' => 'Categorias',
-            'type' => 'categorias'
+            'type' => 'categorias_user_checkbox'
             ], 'both');
 
         $this->crud->addField([
@@ -47,6 +48,7 @@ class UsuariosCrudController extends CrudController {
             'type' => "model_function",
             'function_name' => 'getAdmin', // the method in your Model
         ]);
+
         $this->crud->addColumn([
             'label' => "Categorias", // Table column heading
             'type' => "model_function",
