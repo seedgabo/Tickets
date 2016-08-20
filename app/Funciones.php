@@ -13,84 +13,42 @@ class Funciones
 {
 
 
-    /**
-     * Traduce una fecha a español según el formato dado
-     * @param  Carbon  $date       Fecha a traducir
-     * @param  string  $formato    Formato dado, por default fecha larga
-     * @param  boolean $diferencia Si es True se aplican traducciones a Before y After como Hace o  Dentro de
-     * @return String              Fecha traducida
-     */
     public static function  transdate( $date, $formato ='l j \d\e F \d\e Y h:i:s A' , $diferencia = false)
-	{
+    {
         if(gettype($date) == "NULL" )
             return "";
         if (gettype($date) == "string" )
             $date = Carbon::createFromFormat('Y-m-d H:i:s', $date );
         $cadena = $date->format($formato);
-		$recibido = array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Mon','Tue','Wed','Thu','Fri','Sat','Sun','January','February','March','April','May','June','July','August','September','October','November','December','second','seconds','minute','minutes','day','days','hour','hours','month','months','year','years','week','weeks','before','after',"of");
-		$traducido = array('Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Lun','Mar','Mie','Jue','Vie','Sab','Dom','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre','Segundo','Segundos','Minuto','Minutos','Dia','Dias','Hora','Horas','Mes','Meses','Año','Años','Semana','Semanas','Antes','Despues',"de");
-		$texto = str_replace($recibido,$traducido,$cadena);
-		if (ends_with($texto,"Antes"))
-		{
-			$texto = "Dentro de " .str_replace("Antes","",$texto);
-		}
-		if (ends_with($texto,"Despues"))
-		{
-			$texto = "Hace " .str_replace("Despues","",$texto);
-		}
+        $recibido = array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Mon','Tue','Wed','Thu','Fri','Sat','Sun','January','February','March','April','May','June','July','August','September','October','November','December','second','seconds','minute','minutes','day','days','hour','hours','month','months','year','years','week','weeks','before','after',"of");
+        $traducido = array('Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Lun','Mar','Mie','Jue','Vie','Sab','Dom','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre','Segundo','Segundos','Minuto','Minutos','Dia','Dias','Hora','Horas','Mes','Meses','Año','Años','Semana','Semanas','Antes','Despues',"de");
+        $texto = str_replace($recibido,$traducido,$cadena);
+        if (ends_with($texto,"Antes"))
+        {
+         $texto = "Dentro de " .str_replace("Antes","",$texto);
+     }
+     if (ends_with($texto,"Despues"))
+     {
+         $texto = "Hace " .str_replace("Despues","",$texto);
+     }
 
-		if($diferencia == true)
-		{
-			$texto = str_replace(["Dentro de ", "Hace "],"",$texto);
-		}
+     if($diferencia == true)
+     {
+         $texto = str_replace(["Dentro de ", "Hace "],"",$texto);
+     }
 
-		return $texto;
-	}
+     return $texto;
+     }
 
 
-    public static function  getEmpresa()
-    {
+     public static function  getEmpresa()
+     {
         $empresa = Empresas::find(Session::get('empresa'));
         return $empresa;
     }
 
-    public static function  getCliente()
-    {
-       $cliente =  \App\Cliente::where("COD_TER", Session::get('cliente'))->first();
-       return $cliente;
-    }
 
-    public static function  borrarCarrito()
-    {
-        Carritos::where('user_id',Auth::user()->id)
-        ->where('COD_CLI',Session::get('cliente'))
-        ->delete();
-    }
-
-    public static function procesarCarrito($productos)
-    {
-        $empresa =  Funciones::getEmpresa();
-        $num_ped = $empresa->num_ped;
-
-        foreach ($productos as $producto) {
-            $producto->num_ped = $num_ped;
-            $producto->estado  =  1;
-            $producto->save();
-        }
-        $empresa->num_ped++;
-        $empresa->save();
-        return true;
-    }
-
-    public static function sendMailProccessCarrito($productos, $emails,$user ,$empresa,$cliente)
-    {
-        Mail::send('emails.CarritoProcesado', ['user' => $user,'cliente' => $cliente ,'empresa' => $empresa, 'email' => $emails,'productos' => $productos], function ($m) use ($user, $empresa , $emails)
-        {
-            $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
-            $m->to($emails)->subject('¡Tu compra ha sido procesada!');
-        });
-    }
-
+ 
     public static function sendMailUser($user)
     {
         Mail::send('emails.NewUser', ['user' => $user], function ($m) use ($user)
@@ -107,10 +65,10 @@ class Funciones
 
         Mail::send('emails.NewTicket', ['user' => $user,'guardian' => $guardian ,'ticket' => $ticket], function ($m)
             use ($user, $guardian)
-        {
-            $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
-            $m->to($guardian->email)->subject('¡Nuevo Ticket Asignado!');
-        });
+            {
+                $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
+                $m->to($guardian->email)->subject('¡Nuevo Ticket Asignado!');
+            });
 
         foreach ($usuarios as $usuario) {
             Mail::send('emails.NewTicketGeneral', ['user' => $usuario,'guardian' => $guardian ,'ticket' => $ticket, "creador" => $user], function ($m)   use ($usuario, $guardian)
@@ -151,41 +109,49 @@ class Funciones
         });
     }
 
-    /**
-     * Verifica si un producto contiene la imagen correspodiente a su COD_REF de no tenerlo devuelve una imagen general de no disponible
-     * @param  Collection $producto Producto a buscar Imagen
-     * @return String   Url con la dirección de la imagen
-     */
-    public static function getUrlProducto($producto)
+    public static function sendMailCambioEstado($guardian, $user,$ticket)
     {
-        if(File::exists(public_path().'/img/'. $producto->empresa_id .'/productos/' . trim($producto->COD_REF) .".jpg"))
-            return $url = asset('img/'. $producto->empresa_id .'/productos/' . trim($producto->COD_REF) .".jpg");
-
-        if(File::exists(public_path().'/img/'. $producto->empresa_id .'/productos/' . trim($producto->COD_REF) .".png"))
-            return $url = asset('img/'. $producto->empresa_id .'/productos/' . trim($producto->COD_REF) .".png");
-
-        else
-            return $url = asset("img/nodisponible.jpg");
-    }
-
-
-    /**
-     * Obtiene la url hacia la imagen de perfil del usuario seleccionado
-     * @param  USer $user Usuario a buscar la imagen
-     * @return String       Url con ladirección de la imagen, de no tener se devolvera un valor default
-     */
-    public static function getUrlProfile( $user = null)
-    {
-        if ($user == null)
+        Mail::send('emails.nuevoEstado', ["guardian" =>  $guardian,"ticket"=>$ticket,"user" => $user], function ($m)   use ($user,$guardian)
         {
-            $user = Auth::user();
-        }
-        $files =glob(public_path().'/img/users/'. Auth::user()->id . "*");
-        if($files)
-            return $url = asset('img/users/'. Auth::user()->id. "." . pathinfo($files[0], PATHINFO_EXTENSION));
-        else
-            return $url = asset('/img/user.jpg');
+            $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
+            $m->to([$user->email, $guardian->email])->subject('Caso ha Cambiado de estado');
+        });
     }
+
+    // Programados
+    public static function sendMailTicketVencido($ticket)
+    {
+        $user = $ticket->user;
+        $guardian = $ticket->guardian;
+        Mail::send('emails.ticket-vencido', ["user" => $user, "ticket" => $ticket, 'guardian' => $guardian], function ($m)   use ($user,$guardian)
+        {
+            $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
+            $m->to([$user->email, $guardian->email])->subject('Caso Vencido');
+        });
+    }
+
+    public static function sendMailTicketVence3($ticket)
+    {
+        $user = $ticket->user;
+        $guardian = $ticket->guardian;
+        Mail::send('emails.ticket-vence3', ["user" => $user, "ticket" => $ticket, 'guardian' => $guardian], function ($m)   use ($user,$guardian)
+        {
+            $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
+            $m->to([$user->email, $guardian->email])->subject('Caso Por Vencer');
+        });
+    }
+
+    public static function sendMailTicketVence24($ticket)
+    {
+        $user = $ticket->user;
+        $guardian = $ticket->guardian;
+        Mail::send('emails.ticket-vence24', ["user" => $user, "ticket" => $ticket, 'guardian' => $guardian], function ($m)   use ($user,$guardian)
+        {
+            $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
+            $m->to([$user->email, $guardian->email])->subject('Caso por Vencer en 24 horas');
+        });
+    }
+
 
     public static function sendMailUpdateVencimiento($user,$guardian, $ticket)
     {
@@ -193,11 +159,11 @@ class Funciones
         {
             $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
             $m->to($guardian->email, $guardian->nombre)->subject('Nueva Fecha de Vencimiento');
-        });
-        
+        });   
     }
     public static function UpdateVencimiento($user,$guardian, $ticket)
     {
+        return;
         return;
     }
 }

@@ -2,14 +2,11 @@
 
 use App\Funciones;
 use Illuminate\Support\Facades\Input;
-
 header('Access-Control-Allow-Origin:*');
 header('Access-Control-Allow-Methods:GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers:Origin, Content-Type, Accept, Authorization, X-Requested-With,X-XSRF-TOKEN, Auth-Token');
 
-
 Route::group(['middleware' => 'web'], function () {
-
 
 	Route::group([], function() {
 		Route::auth();
@@ -38,7 +35,6 @@ Route::group(['middleware' => 'web'], function () {
 		Route::get('busqueda',['middleware' => ['auth'], 'uses' => "HomeController@busqueda"]);
 	});
 
-
 	Route::group(['prefix' => 'ajax'], function() {
 		Route::any('/setEstadoTicket/{id}' , 'AjaxController@setEstadoTicket');
 		Route::any('/addComentarioTicket' , 'AjaxController@addComentarioTicket');
@@ -47,7 +43,6 @@ Route::group(['middleware' => 'web'], function () {
 		Route::any('/setVencimiento/{id}' , 'AjaxController@setVencimientoTicket');
 		Route::any('/getUsersbyCategoria' , 'AjaxController@getUsersbyCategoria');
 	});
-
 
 	Route::group(['middleware' =>['auth','isAdmin']], function() {
 
@@ -76,9 +71,6 @@ Route::group(['middleware' => 'web'], function () {
 		]);
 	});
 
-
-
-
 	Route::post('tickets/', [
 		'as' => 'tickets.store',
 		'uses' => 'TicketsController@store',
@@ -91,7 +83,14 @@ Route::group(['middleware' => 'web'], function () {
 			Route::get('{categoria}/getTickets', 'ApiController@getTickets');
 			Route::get('getTicket/{ticket_id}', 'ApiController@getTicket');			
 			Route::get('{categoria}/getDocumentos', 'ApiController@getDocumentos');
-			
+			Route::get('getDocumento/{id}','HomeController@getDocumento');		
+
+			Route::post('addComentario/{ticket_id}','ApiController@addComentarioTicket');		
+			Route::delete('deleteComenarioTicket/{comentario_id}','ApiController@deleteComentarioTicket');	
+
+			Route::get('getEncryptedFile/ticket/{id}/{clave}','HomeController@getFileTicketEncrypted');
+			Route::get('getEncryptedFile/comentario/{id}/{clave}','HomeController@getFileComentarioTicketEncrypted');
+	
 	});
 
 	Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin']], function(){
@@ -105,11 +104,5 @@ Route::group(['middleware' => 'web'], function () {
 });
 
 Route::get('api/auth', ['middleware' => 'auth.basic.once', 'uses' => 'ApiController@doLogin']);
-
-Route::get('getListaCategoriasDocumentos', function(Request $request) {
-	return view('lista-documentos-tree');
-});
-
-Route::get('getListaCategoriasTickets', function(Request $request) {
-	return view('lista-tickets-tree');
-});
+Route::get('getListaCategoriasDocumentos', function(Request $request) {return view('lista-documentos-tree');});
+Route::get('getListaCategoriasTickets', function(Request $request) {return view('lista-tickets-tree');});

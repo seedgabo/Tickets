@@ -1,0 +1,23 @@
+
+[37;41m                                                                  [39;49m
+[37;41m  [Symfony\Component\Console\Exception\CommandNotFoundException]  [39;49m
+[37;41m  Command "sendMailVence3" is not defined.                        [39;49m
+[37;41m  Did you mean one of these?                                      [39;49m
+[37;41m      sendmailvence24                                             [39;49m
+[37;41m      sendmailvence3                                              [39;49m
+[37;41m      sendMailVencidos                                            [39;49m
+[37;41m                                                                  [39;49m
+
+
+[37;41m                                                                  [39;49m
+[37;41m  [Symfony\Component\Console\Exception\CommandNotFoundException]  [39;49m
+[37;41m  Command "sendMailVence3" is not defined.                        [39;49m
+[37;41m  Did you mean one of these?                                      [39;49m
+[37;41m      sendMailVence24                                             [39;49m
+[37;41m      sendMailCence3                                              [39;49m
+[37;41m      sendMailVencidos                                            [39;49m
+[37;41m                                                                  [39;49m
+
+[32msadas enviado correo de ticket por vencer en 3 horas[39m
+[32msadas enviado correo de ticket por vencer en 3 horas[39m
+[32msadas enviado correo de ticket por vencer en 3 horas[39m

@@ -6,9 +6,9 @@
 <body>
     <table class="container">
         <div>
-            <h3> Hola, {{$user->nombre}}</h3>
-            <p>Hemos detectado que recientemente se ha cambiado la contraseña de su usuario en el sistema</p>
-            <p style="color:red">Si piensa que es un error por favor comuniquese con el equipo técnico</p>
+            <h3> Ticket: {{$ticket->titulo}} </h3>
+            <p>Se ha actualizado el estado del  caso: <b>{{$ticket->estado}}</b></p><br>
+            <b>Fecha Límite del Caso:</b>{{$ticket->vencimiento ? \App\Funciones::transdate($ticket->vencimiento) : "No Vence" }}
         </div>
     </table>
     

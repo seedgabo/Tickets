@@ -136,7 +136,7 @@ class CategoriasTickets extends Model
         return $menu_html;
     }
 
-    public static function menu($array,$parent_id = 0)
+    public static function menu($array,$parent_id = 0, $tickets = true)
     {
         $menu_html = '<ol class="fa-ul"';
         if($parent_id == 0) $menu_html .= 'id="accordion"';
@@ -147,6 +147,8 @@ class CategoriasTickets extends Model
             {
                 $menu_html .= '<li> <i class="fa fa-folder fa-li" style="color:blue;"></i> '. $element['nombre'];
                 $menu_html .= static::menu($array,$element['id']);
+                if ($tickets)
+                    $menu_html .= static::menu_tickets($element['id']);
                 $menu_html .= '</li>';
             }
         }
@@ -160,7 +162,7 @@ class CategoriasTickets extends Model
 		$menu = "<ul class='fa-ul'>";
 		foreach ($tickets as $key => $value)
 		{
-			$menu .= "<li><i class='fa fa-file fa-li' style='color:red;'></i> ". $value ."</li>";
+			$menu .= "<li><i class='fa fa-ticket fa-li' style='color:red;'></i> ". $value ."</li>";
 		}
 		return $menu ."</ul>";
 	}

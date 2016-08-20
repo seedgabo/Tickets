@@ -25,9 +25,11 @@ class Tickets extends Model
         "vencimiento",
         "transferible",
         "encriptado",
-        "clave",
     ];
 
+    protected $hidden = [
+        'clave'
+    ];
     /**
      * The attributes that should be casted to native types.
      *

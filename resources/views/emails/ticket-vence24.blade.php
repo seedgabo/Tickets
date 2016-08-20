@@ -6,12 +6,13 @@
 <body>
     <table class="container">
         <div>
-            <h3>Hola, {{ $guardian->nombre}}</h3>
-            <p>A usted se le ha transferido un ticket</p>
-            <div style="background-color: #DCDCDC; border: dashed 1px black; ">
+            <h3 style="color:red">Ticket Por vencer: {{$ticket->titulo}} de {{$ticket->categoria->nombre}} </h3>
+            <p>Quedan 24 horas para la culminación de este ticket</p>
+            <div style="background-color: #E2E2E2; ">
               
               Ticket:  {{$ticket->titulo}} <br>
               Usuario:  {{ $user->nombre}}<br>
+              Guardian: {{$ticket->guardian->nombre}} <br>
 
             </div>
         </div>

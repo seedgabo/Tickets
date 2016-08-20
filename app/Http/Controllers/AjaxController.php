@@ -27,6 +27,7 @@ class AjaxController extends Controller
         $ticket = Tickets::find($id);
         $ticket->estado = $request->input('estado');
         $ticket->save();
+        \App\Funciones::sendMailCambioEstado($ticket->guardian, $ticket->user, $ticket);
         return $ticket->estado;
     }
 
@@ -38,6 +39,7 @@ class AjaxController extends Controller
         \App\Funciones::sendMailNewGuardian(User::find($request->input('guardian_id')),User::find(Auth::user()->id),$ticket);
         return $ticket;
     }
+
     public function setVencimientoTicket(Request $request, $id)
     {
         $ticket = Tickets::find($id);

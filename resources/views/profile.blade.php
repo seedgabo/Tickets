@@ -5,7 +5,7 @@
 			<fieldset>
 				<legend>Datos</legend>
 			 <div class="text-left">
-			 	<img src="{{App\Funciones::getUrlProfile()}}" height="80px" alt="usuario Imagen" class="img-circle">
+			 	<img src="{{$user->imagen() }}" height="80px" alt="usuario Imagen" class="img-circle">
 			 </div>
 			<div class="form-group{{ $errors->has('nombre') ? ' has-error' : '' }}">
 			    {!! Form::label('nombre', 'Nombre:', ['class' => 'col-sm-3 control-label']) !!}
@@ -64,8 +64,7 @@
 		{!! Form::submit("Guardar", ['class' => 'btn btn-block btn-primary']) !!}
 		{!! Form::close() !!}
 
-		<div class="col-md-6">
-			<a href="" class="btn btn-ñg btn-success"> <i class="fa fa-android fa-2x"></i> Obtener para android</a>
-		</div>
+		<br>
+		<a href="" class="btn btn-block btn-success"> <i class="fa fa-android fa-lg"></i> Obtener para android</a>
 	</div>
 @stop

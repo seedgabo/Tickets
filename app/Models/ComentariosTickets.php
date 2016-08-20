@@ -41,6 +41,9 @@ class ComentariosTickets extends Model
 
     public function file()
     {
+        if($this->archivo == null)
+            return null;
+
         if($this->encriptado == true)
         {
             return url("getEncryptedFile/comentario/" . $this->id);

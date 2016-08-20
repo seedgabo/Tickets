@@ -2,8 +2,10 @@
 
 namespace App\Console;
 
+use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Mail;
 
 class Kernel extends ConsoleKernel
 {
@@ -14,6 +16,9 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\Inspire::class,
+        Commands\SendEmailsReminderVencido::class,
+        Commands\SendEmailsReminderVence3::class,
+        Commands\SendEmailsReminderVence24::class,
     ];
 
     /**
@@ -24,7 +29,17 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('inspire')
-                 ->hourly();
+        $schedule->command('sendMailVencidos')
+            ->everyFiveMinutes()
+            ->appendOutputTo("ticketsvencidos.txt");
+
+        $schedule->command('sendMailVence3')
+            ->everyFiveMinutes()
+            ->appendOutputTo("ticketsvence3.txt");
+            
+        $schedule->command('sendMailVence24')
+            ->everyFiveMinutes()
+            ->appendOutputTo("ticketsvence24.txt");
+
     }
 }

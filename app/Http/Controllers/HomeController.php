@@ -172,8 +172,7 @@ class HomeController extends Controller
 
     public function listarDocumentos (Request $request, $categoria)
     {
-        $categorias = \App\Models\CategoriaDocumentos::where("parent_id","=",$categoria)
-        ->distinct()->get();
+        $categorias = \App\Models\CategoriaDocumentos::where("parent_id","=",$categoria)->get();
         $documentos = \App\Models\Documentos::where("categoria_id", "=", $categoria)->where("activo","=","1")->get();
         return view('ver-documentos')->withDocumentos($documentos)->withCategoria($categoria)->withCategorias($categorias);
     }

@@ -28,7 +28,7 @@ class CreateTicketsTable extends Migration
             $table->boolean("transferible")->default(true);
             $table->boolean("encriptado")->default(false);
             $table->string("clave")->nullable();
-            $table->string('vencimiento')->nullable();
+            $table->dateTime('vencimiento')->nullable();
             $table->timestamps();
 			$table->softDeletes();
         });

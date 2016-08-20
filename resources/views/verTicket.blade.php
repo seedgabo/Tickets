@@ -37,7 +37,7 @@
 				@if ($ticket->archivo!= '' || $ticket->archivo != null)
 					<h4 class="text-right">					
 					<a  @if($ticket->encriptado == "true") onclick="verArchivo('{{$ticket->archivo()}}')" @else href="{{$ticket->archivo()}}" @endif>
-						{{$ticket->archivo}}
+						@if($ticket->encriptado == "true")<i class="fa fa-lock"></i> @endif {{$ticket->archivo}}
 					</a></h4>
 				@endif
 			</div>
@@ -86,7 +86,7 @@
 				@if (isset($comentario->archivo) && $comentario->archivo != "")
 					<br>
 					<a  @if($comentario->encriptado == "true") onclick="verArchivo('{{$comentario->file()}}')" @else href="{{$comentario->file()}}" @endif>
-						{{$comentario->archivo}}
+						@if($comentario->encriptado == "true")<i class="fa fa-lock"></i> @endif {{$comentario->archivo}}
 					</a>
 				@endif
 				</p>

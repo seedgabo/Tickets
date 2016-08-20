@@ -27,7 +27,7 @@
       </tr>
     </table>
     
-    <a href="{{url('/')}}">
+    <a href="{{url('/')}}" style="width:300px;">
         {{Html::image(asset('img/logo.png'))}}
     </a>
 </body>

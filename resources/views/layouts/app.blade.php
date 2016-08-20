@@ -19,7 +19,7 @@
                 </button>
                 <a class="navbar-brand" href="{{url('')}}">
                     <img src="{{asset('img/logo.png')}}" alt="logo" class="img-responsive" style="height: 45px; display:inline">
-                    <b>DUFLO</b>SA
+                    <b>DUFLO</b>   SAS
                 </a>
             </div>
             <!-- /.navbar-header -->
