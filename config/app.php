@@ -39,7 +39,7 @@ return [
     |
     */
 
-    'url' => 'http://190.85.8.84/',
+    'url' => 'http://190.85.8.84:8080/',
 
     /*
     |--------------------------------------------------------------------------
@@ -147,7 +147,6 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-
         /*
          * Application Service Providers...
          */
@@ -167,6 +166,7 @@ return [
 
         Acacha\AdminLTETemplateLaravel\Providers\AdminLTETemplateServiceProvider::class,
         Chumper\Zipper\ZipperServiceProvider::class,
+        Davibennun\LaravelPushNotification\LaravelPushNotificationServiceProvider::class,
 
 
         Backpack\Base\BaseServiceProvider::class,
@@ -228,7 +228,8 @@ return [
 
 
         'AdminLTE' => Acacha\AdminLTETemplateLaravel\Facades\AdminLTE::class,
-        'Zipper' => Chumper\Zipper\Zipper::class
+        'Zipper' => Chumper\Zipper\Zipper::class,
+        'PushNotification' => Davibennun\LaravelPushNotification\Facades\PushNotification::class,
 
     ],
 

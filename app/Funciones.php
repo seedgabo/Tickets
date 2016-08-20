@@ -2,16 +2,15 @@
 namespace App;
 
 use App\Dbf;
+use App\Models\Dispositivo;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpKernel\Tests\HttpCache\request;
-
 class Funciones
 {
-
 
     public static function  transdate( $date, $formato ='l j \d\e F \d\e Y h:i:s A' , $diferencia = false)
     {
@@ -47,7 +46,6 @@ class Funciones
         return $empresa;
     }
 
-
  
     public static function sendMailUser($user)
     {
@@ -77,6 +75,7 @@ class Funciones
                 $m->to($usuario->email, $usuario->nombre)->subject('¡Nuevo Ticket!');
             });
         }
+        Dispositivo::sendPush("Nuevo Caso Creado","Se ha creado un nuevo caso en la categoría " .$ticket->categoria->nombre, [$user->id,$guardian->id]);
     }
 
     public static function sendMailNewComentario($users, $comentario)
@@ -88,6 +87,9 @@ class Funciones
             $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
             $m->to($usuarios)->subject('¡Nuevo Comentario!');
         });
+        $usuarios = \App\User::whereIn('id',$users)->pluck('id');
+        $ticket = $comentario->ticket;
+        Dispositivo::sendPush("Nuevo Seguimiento","Se ha creado un nuevo comentario en el caso " .$ticket->titulo, $usuarios);
     }
 
     public static function sendMailNewGuardian($guardian, $user, $ticket)
@@ -98,6 +100,7 @@ class Funciones
             $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
             $m->to($guardian->email, $guardian->nombre)->subject('Asignación de guardian');
         });
+        Dispositivo::sendPush("Nuevo Guardian","Se le ha asignado el caso " .$ticket->titulo, [$user->id,$guardian->id]);
     }
 
     public static function sendMailPasswordChanged ($user)
@@ -116,6 +119,8 @@ class Funciones
             $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
             $m->to([$user->email, $guardian->email])->subject('Caso ha Cambiado de estado');
         });
+
+        Dispositivo::sendPush("Cambio de estado","El caso " .$ticket->titulo. " ha cambiado de estado a " .$ticket->estado, [$user->id,$guardian->id]);
     }
 
     // Programados
@@ -128,6 +133,8 @@ class Funciones
             $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
             $m->to([$user->email, $guardian->email])->subject('Caso Vencido');
         });
+
+        Dispositivo::sendPush("Caso Vencido","Ha vencido el plazo para el caso de  " .$ticket->titulo , [$user->id,$guardian->id]);
     }
 
     public static function sendMailTicketVence3($ticket)
@@ -139,6 +146,8 @@ class Funciones
             $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
             $m->to([$user->email, $guardian->email])->subject('Caso Por Vencer');
         });
+
+        Dispositivo::sendPush("Caso Por Vencer","Atención! El caso esta por vencer: " .$ticket->titulo, [$user->id,$guardian->id]);
     }
 
     public static function sendMailTicketVence24($ticket)
@@ -150,6 +159,8 @@ class Funciones
             $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
             $m->to([$user->email, $guardian->email])->subject('Caso por Vencer en 24 horas');
         });
+
+        Dispositivo::sendPush("Recordatorio de Caso","El caso " .$ticket->titulo . " vencerá en menos de 24 horas", [$user->id,$guardian->id]);
     }
 
 
@@ -160,10 +171,24 @@ class Funciones
             $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
             $m->to($guardian->email, $guardian->nombre)->subject('Nueva Fecha de Vencimiento');
         });   
+
+        Dispositivo::sendPush("Actualización de caso","Ha cambiado la fecha de plazo para el caso  " .$ticket->titulo, [$user->id,$guardian->id]);
     }
+
+
+    public static function sendMailContenidoActualizado($ticket,$user,$guardian)
+    {
+        Mail::send('emails.updateContenido', ["guardian" =>  $guardian,"ticket"=>$ticket,"user" => $user], function ($m)   use ($guardian)
+        {
+            $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
+            $m->to($guardian->email, $guardian->nombre)->subject('Contenido actualizado');
+        });   
+        Dispositivo::sendPush("Actualización de caso","El contenido del caso se actualizó: " .$ticket->titulo, [$user->id,$guardian->id]);
+    }
+
+
     public static function UpdateVencimiento($user,$guardian, $ticket)
     {
-        return;
         return;
     }
 }

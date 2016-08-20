@@ -84,12 +84,16 @@ Route::group(['middleware' => 'web'], function () {
 			Route::get('getTicket/{ticket_id}', 'ApiController@getTicket');			
 			Route::get('{categoria}/getDocumentos', 'ApiController@getDocumentos');
 			Route::get('getDocumento/{id}','HomeController@getDocumento');		
+			Route::get('getUsuariosCategoria/{categoria_id}', 'ApiController@getUsuariosCategoria');
 
+			Route::post('addTicket', 'ApiController@addTicket');
 			Route::post('addComentario/{ticket_id}','ApiController@addComentarioTicket');		
 			Route::delete('deleteComenarioTicket/{comentario_id}','ApiController@deleteComentarioTicket');	
 
 			Route::get('getEncryptedFile/ticket/{id}/{clave}','HomeController@getFileTicketEncrypted');
 			Route::get('getEncryptedFile/comentario/{id}/{clave}','HomeController@getFileComentarioTicketEncrypted');
+
+			Route::resource('dispositivos', 'DispositivosController');
 	
 	});
 
@@ -106,3 +110,9 @@ Route::group(['middleware' => 'web'], function () {
 Route::get('api/auth', ['middleware' => 'auth.basic.once', 'uses' => 'ApiController@doLogin']);
 Route::get('getListaCategoriasDocumentos', function(Request $request) {return view('lista-documentos-tree');});
 Route::get('getListaCategoriasTickets', function(Request $request) {return view('lista-tickets-tree');});
+
+Route::get('sendPush', function(){
+	 $usuarios = \App\User::find(Input::get('usuarios'));
+	 
+	 \App\Models\Dispositivo::SendPush(Input::get('titulo','Matriz'),Input::get('mensaje','Caso'),$usuarios);
+});

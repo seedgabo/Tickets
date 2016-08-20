@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Requests;
 use App\Funciones;
+use App\Http\Requests;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Input;
@@ -83,6 +84,53 @@ class ApiController extends Controller
         return \Response::json(['comentarios' => $comentarios, 'ticket' => $ticket], 200);
     }
 
+    public function getUsuariosCategoria(Request $request ,$categoria_id)
+    {
+        $categoria =  \App\Models\CategoriasTickets::find($categoria_id);
+        $users = $categoria->users();
+        return json_encode($users);
+    }
+
+
+    public function addTicket(Request $request)
+    {
+        if($request->hasFile('archivo') && $request->get("encriptado") == "true" && !$request->has("clave"))
+        {
+            return "Debe Ingresar Una contraseña para encriptar el archivo";
+        }
+        
+        $input = $request->except("archivo","enriptado","clave","vencimiento");
+        $tickets = \App\Models\Tickets::create($input);
+        $tickets->vencimiento = new Carbon($request->input('vencimiento'));
+        $tickets->user_id = Auth::user()->id;
+        $tickets->save();
+        if($request->hasFile('archivo'))
+        {   
+            $nombre = $request->file("archivo")->getClientOriginalName();
+            // Si Se pidio Encriptar El Archivo
+            if($request->get("encriptado") == "true")
+            {
+                $tickets->encriptado = true;
+                $tickets->archivo = $nombre;       
+                $tickets->clave = $request->get("clave");              
+
+                $encriptado = Crypt::encrypt(file_get_contents($request->file("archivo")));
+                Storage::put("tickets/". $tickets->id . "/" . $nombre , $encriptado);
+            }
+            // Si no
+            else
+            {
+                $request->file('archivo')->move(public_path("archivos/tickets/" . $tickets->id . "/"), $nombre );
+                $tickets->archivo = $nombre;                
+            }
+
+            $tickets->save();
+        }
+
+        Funciones::sendMailNewTicket($tickets, $tickets->user, $tickets->guardian);
+        return $tickets;
+    }
+
     public function addComentarioTicket (Request $request, $ticket_id)
     {
         $ticket = \App\Models\Tickets::find($ticket_id);
@@ -132,7 +180,7 @@ class ApiController extends Controller
         return "true";
     }
 
-   public function getFileTicketEncrypted(Request $request, $id, $clave)
+    public function getFileTicketEncrypted(Request $request, $id, $clave)
     {
         $ticket = Tickets::find($id);
         if($clave != $ticket->clave)

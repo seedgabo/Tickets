@@ -162,6 +162,7 @@ class HomeController extends Controller
                 ]);
             $ticket->save();
             \Flash::success("Contenido Actualizado");
+            Funciones::sendMailContenidoActualizado($tickets,$tickets->user,$ticket->guardian);
         }
         else
         {
