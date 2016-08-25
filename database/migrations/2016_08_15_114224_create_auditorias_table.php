@@ -17,7 +17,7 @@ class CreateAuditoriasTable extends Migration
             $table->string('tipo');
             $table->integer('user_id');
             $table->integer('documento_id')->nullable();
-            $table->integer('ticket_id')->nullable(); 
+            $table->integer('ticket_id')->nullable();
             $table->timestamps();
         });
     }

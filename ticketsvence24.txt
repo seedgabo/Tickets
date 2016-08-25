@@ -15,3 +15,6 @@
 [37;41m                                                           [39;49m
 
 [32msadas enviado correo de ticket por vencer en 24 horas[39m
+[32mMi Caso De prueba enviado correo de ticket por vencer en 24 horas[39m
+[32mMi Caso encriptado enviado correo de ticket por vencer en 24 horas[39m
+[32msadsad enviado correo de ticket por vencer en 24 horas[39m

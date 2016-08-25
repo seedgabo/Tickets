@@ -13,7 +13,8 @@
         "backpack/base": "^0.6.13",
         "backpack/crud": "^3.0",
         "backpack/generators": "^1.1",
-        "backpack/permissionmanager": "^2.1"
+        "backpack/permissionmanager": "^2.1",
+        "backpack/backupmanager": "^1.1"
     },
     "require-dev": {
         "davibennun/laravel-push-notification": "dev-laravel5",

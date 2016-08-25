@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Tickets;
+use App\Models\Documentos;
+use App\User;
 use Backpack\CRUD\CrudTrait;
+use Illuminate\Database\Eloquent\Model;
 
 class Auditorias extends Model
 {
@@ -56,15 +59,30 @@ class Auditorias extends Model
         return $query->where('tipo', '=', 'descarga')->where('documento_id',"=",$documento_id)->sum();
     }
 
-	/*
-	|--------------------------------------------------------------------------
-	| ACCESORS
-	|--------------------------------------------------------------------------
-	*/
 
-	/*
-	|--------------------------------------------------------------------------
-	| MUTATORS
-	|--------------------------------------------------------------------------
-	*/
+	public function auditado()
+	{	
+		//Si es algo sobre un usuario
+		if(isset($this->user_id))
+		{
+			// Si es algo sobre un ticket
+			if(isset($this->ticket_id))
+			{
+				if($this->tipo == "Creación")
+					return "El Usuario " . User::find($this->user_id)->nombre . " creó un Caso:" .Tickets::withTrashed()->find($this->ticket_id)->titulo;
+
+				if($this->tipo == "Actualización")
+					return "El Usuario " . User::find($this->user_id)->nombre . " Actualizó algun dato del Caso ". Tickets::withTrashed()->find($this->ticket_id)->titulo;
+
+				if($this->tipo == "Eliminación")
+					return "El Usuario " . User::find($this->user_id)->nombre . " Eliminó el Caso ".Tickets::withTrashed()->find($this->ticket_id)->titulo;
+			}
+
+			//Si es algo sobre un documento
+			if(isset($this->documento_id))
+			{
+				return "El Usuario " . User::find($this->user_id)->nombre . " Descargó el documento ". Documentos::withTrashed()->find($this->documento_id)->titulo;
+			}
+		}
+	}
 }

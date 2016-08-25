@@ -14,7 +14,7 @@ class User extends Authenticatable
     use HasRoles; 
 
     protected $fillable = [
-        'nombre', 'email','categorias_id' ,'admin'
+        'nombre', 'email','categorias_id' ,'admin','departamento','cargo'
     ];
     protected $hidden = [
         'password', 'remember_token',
@@ -53,6 +53,5 @@ class User extends Authenticatable
     {
         return $this->hasMany("\App\Models\Auditorias","user_id","id");
     }
-
 
 }

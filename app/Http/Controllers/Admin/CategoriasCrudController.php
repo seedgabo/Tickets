@@ -35,9 +35,12 @@ class CategoriasCrudController extends CrudController {
             'type' => 'categoria_tickets_radio'
         ], 'both');
 
+        $this->crud->addButtonFromModelFunction("line", "boton", "getButtonAddMasive", "beginning");
         $this->crud->removeField('parent_id','both');
         $this->crud->removeColumn('parent_id');
     }
+
+
 
 	public function store(StoreRequest $request)
 	{

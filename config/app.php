@@ -173,7 +173,8 @@ return [
         Backpack\CRUD\CrudServiceProvider::class,
         Backpack\Generators\GeneratorsServiceProvider::class,
         Backpack\PermissionManager\PermissionManagerServiceProvider::class,
-        
+        Spatie\Backup\BackupServiceProvider::class,
+        Backpack\BackupManager\BackupManagerServiceProvider::class,
     ],
 
     /*

@@ -49,7 +49,7 @@
                         </div>
                     </div><!-- /.col -->
                     <div class="col-xs-4">
-                        <button type="submit" class="btn btn-primary btn-block btn-flat">Register</button>
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">Registrar</button>
                     </div><!-- /.col -->
                 </div>
             </form>
@@ -60,7 +60,7 @@
                 <a href="#" class="btn btn-block btn-social btn-google btn-flat"><i class="fa fa-google-plus"></i> Sign up using Google+</a>
             </div>
 
-            <a href="{{ url('/login') }}" class="text-center">I already have a membership</a>
+            <a href="{{ url('/login') }}" class="text-center">Ya tengo cuenta</a>
         </div><!-- /.form-box -->
     </div><!-- /.register-box -->
 

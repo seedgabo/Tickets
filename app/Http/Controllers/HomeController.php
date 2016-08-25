@@ -120,7 +120,7 @@ class HomeController extends Controller
     public function porCategoria(Request $request, $categoria)
     {
         $tickets = CategoriasTickets::find($categoria)->tickets;
-        $subCategorias = CategoriasTickets::find($categoria)->children;
+        $subCategorias = Auth::user()->categorias()->whereLoose("parent_id",$categoria);
         return  view('tickets')->withTickets($tickets)->withSubcategorias($subCategorias);
     }
 
@@ -162,7 +162,7 @@ class HomeController extends Controller
                 ]);
             $ticket->save();
             \Flash::success("Contenido Actualizado");
-            Funciones::sendMailContenidoActualizado($tickets,$tickets->user,$ticket->guardian);
+            Funciones::sendMailContenidoActualizado($ticket,$ticket->user,$ticket->guardian);
         }
         else
         {

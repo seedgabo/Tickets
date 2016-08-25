@@ -162,10 +162,11 @@ class ApiController extends Controller
                 $request->file('archivo')->move(public_path("archivos/ComentariosTickets/"), $nombre );
                 $comentario->archivo =  $nombre;
             }
+
             $comentario->save();
         }
 
-        \App\Funciones::sendMailNewComentario([$ticket->user->email,$ticket->guardian->email], $comentario);  
+        \App\Funciones::sendMailNewComentario([$ticket->user->id,$ticket->guardian->id], $comentario);  
         return $comentario;
     }
     

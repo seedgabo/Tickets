@@ -62,6 +62,10 @@ class CategoriasTickets extends Model
         return $users;
     }
 
+    public function getButtonAddMasive(){
+        return "<a class='btn btn-default btn-xs' href='categorias-masivas/" . $this->id . "'><i class='fa fa-user-plus'></i> Agregar Usuarios</a>";
+    }
+
     public static function ordered_menu($array,$parent_id = 0)
     {
         $temp_array = array();

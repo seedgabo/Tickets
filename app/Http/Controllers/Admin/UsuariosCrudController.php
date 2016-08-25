@@ -55,6 +55,7 @@ class UsuariosCrudController extends CrudController {
             'function_name' => 'getCategoriasText', // the method in your Model
         ]);
 
+        $this->crud->addButtonFromModelFunction("line", "boton", "getButtonAuditar", "end");
 
     }
 

@@ -17,9 +17,9 @@
         Su usuario ha sido creado con exito
 
         Usuario:  {{$user->email}} <br>
-        Contraseña: {{$user->cod_vendedor}} <br>
+        Contraseña: Tickets6325 <br>
     </div>
-    <small> Se Recomienda cambia la clave lo antes posible</small>
+    <strong style="color:red"> Se Recomienda cambia la clave lo antes posible</strong>
 
 
     <a href="{{url('/')}}" style="width:300px;">

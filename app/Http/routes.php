@@ -98,11 +98,20 @@ Route::group(['middleware' => 'web'], function () {
 	});
 
 	Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin']], function(){
+
 		CRUD::resource('categorias', 'Admin\CategoriasCrudController');
 		CRUD::resource('usuarios', 'Admin\UsuariosCrudController');
 		CRUD::resource('tickets', 'Admin\TicketsCrudController');
 		CRUD::resource('documentos', 'Admin\DocumentoCrudController');
 		CRUD::resource('categoriadocumentos', 'Admin\CategoriaDocumentosCrudController');
+
+		Route::get('categorias-masivas/{categoria}', 'AdminController@categoriasUsuarios');
+		Route::put('categorias-masivas/{categoria}', 'AdminController@agregarmasivamente');
+
+	});
+
+	Route::group(['prefix' => 'admin/auditar','middleware' => ['isAdmin']], function(){
+		Route::get('usuario/{user_id?}', 'AdminController@auditarUsuario');		
 	});
 	
 });

@@ -41,5 +41,8 @@ class Kernel extends ConsoleKernel
             ->everyFiveMinutes()
             ->appendOutputTo("ticketsvence24.txt");
 
+        $schedule->command('backup:clean')->daily();
+        $schedule->command('backup:run')->daily();
+
     }
 }

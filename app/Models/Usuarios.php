@@ -11,7 +11,7 @@ class Usuarios extends Model
 
 	protected $table = 'users';
 	protected $primaryKey = 'id';
-	protected $fillable = ["nombre","email","categorias_id","admin"];
+	protected $fillable = ["nombre","email","categorias_id","admin","departamento","cargo"];
 
     protected $casts = [
         'categorias_id' => 'array',
@@ -44,6 +44,11 @@ class Usuarios extends Model
 	public function getCategorias()
     {
         return CategoriasTickets::wherein('id', $this->categorias_id)->get();
+    }
+
+    public function getButtonAuditar()
+    {
+        return '<a class="btn btn-default btn-xs" href="auditar/usuario/'. $this->id .'"> <i class="fa fa-files-o"></i> Auditar</a>';
     }
 
 }
