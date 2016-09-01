@@ -5,9 +5,10 @@
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
             });
             
+            $('.chosen').chosen('destroy').chosen();
+
             jQuery.datetimepicker.setLocale('es');
             jQuery('.datetimepicker').datetimepicker({format:'Y-m-d H:i:s',mask:true, allowBlank : true});
-            
             jQuery('.datetimepicker:not(.pre)').val("{{Carbon\Carbon::now()->addHours(24)->format('Y-m-d H:i:s')}}");
 
             $('.datatable tfoot th').each( function () {
@@ -95,6 +96,7 @@
                     }
                 ]
             });
+            
             table.columns().every( function () {
                 var that = this;
                 $( 'input', this.footer() ).on( 'keyup change', function () {
@@ -105,5 +107,10 @@
                     }
                 } );
             } );
+
+            if ($('#textarea').length >0)
+            {
+                CKEDITOR.replace( 'textarea' );
+            }
        });
 </script>

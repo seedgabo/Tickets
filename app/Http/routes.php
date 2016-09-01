@@ -17,6 +17,7 @@ Route::group(['middleware' => 'web'], function () {
 		Route::get('profile' ,['middleware' => ['auth'], 'uses' => "HomeController@profile"]);
 		Route::put('profile' ,['middleware' => ['auth'], 'uses' => "HomeController@profileUpdate"]);
 
+		Route::get('agregar-ticket', ['middleware' => ['auth'], 'uses' =>'HomeController@ticketAgregar']);
 		Route::get('/ticket',   ['middleware' => ['auth'], 'uses' =>'HomeController@tickets']);
 		Route::get('/mis-tickets',   ['middleware' => ['auth'], 'uses' =>'HomeController@misTickets']);
 		Route::get('/tickets/todos',   ['middleware' => ['auth'], 'uses' =>'HomeController@Todostickets']);
@@ -37,6 +38,7 @@ Route::group(['middleware' => 'web'], function () {
 
 	Route::group(['prefix' => 'ajax'], function() {
 		Route::any('/setEstadoTicket/{id}' , 'AjaxController@setEstadoTicket');
+		Route::any('/setInvitadosTickets/{id}' , 'AjaxController@setInvitadosTickets');
 		Route::any('/addComentarioTicket' , 'AjaxController@addComentarioTicket');
 		Route::any('/deleteComentarioTicket/{id}' , 'AjaxController@deleteComentarioTicket');
 		Route::any('/setGuardianTicket/{id}' , 'AjaxController@setGuardianTicket');
@@ -85,6 +87,12 @@ Route::group(['middleware' => 'web'], function () {
 			Route::get('{categoria}/getDocumentos', 'ApiController@getDocumentos');
 			Route::get('getDocumento/{id}','HomeController@getDocumento');		
 			Route::get('getUsuariosCategoria/{categoria_id}', 'ApiController@getUsuariosCategoria');
+			Route::get('search', 'ApiController@busqueda');
+
+			Route::get('getMisTickets', 'ApiController@getMisTickets');
+			Route::get('getAllTickets', 'ApiController@getAllTickets');
+			Route::get('getTicketsVencidos', 'ApiController@getTicketsVencidos');
+			Route::get('getTicketsAbiertos', 'ApiController@getTicketsAbiertos');
 
 			Route::post('addTicket', 'ApiController@addTicket');
 			Route::post('addComentario/{ticket_id}','ApiController@addComentarioTicket');		
@@ -119,9 +127,3 @@ Route::group(['middleware' => 'web'], function () {
 Route::get('api/auth', ['middleware' => 'auth.basic.once', 'uses' => 'ApiController@doLogin']);
 Route::get('getListaCategoriasDocumentos', function(Request $request) {return view('lista-documentos-tree');});
 Route::get('getListaCategoriasTickets', function(Request $request) {return view('lista-tickets-tree');});
-
-Route::get('sendPush', function(){
-	 $usuarios = \App\User::find(Input::get('usuarios'));
-	 
-	 \App\Models\Dispositivo::SendPush(Input::get('titulo','Matriz'),Input::get('mensaje','Caso'),$usuarios);
-});

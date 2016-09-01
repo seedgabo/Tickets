@@ -27,7 +27,11 @@ class AjaxController extends Controller
         $ticket = Tickets::find($id);
         $ticket->estado = $request->input('estado');
         $ticket->save();
+
+        \App\Models\Auditorias::create(['tipo' => 'cambio de estado', 'user_id' => Auth::user()->id, 'ticket_id' => $ticket->id]);
+
         \App\Funciones::sendMailCambioEstado($ticket->guardian, $ticket->user, $ticket);
+        
         return $ticket->estado;
     }
 
@@ -36,6 +40,9 @@ class AjaxController extends Controller
         $ticket = Tickets::find($id);
         $ticket->guardian_id = $request->input('guardian_id');
         $ticket->save();
+
+        \App\Models\Auditorias::create(['tipo' => 'cambio de responsable', 'user_id' => Auth::user()->id, 'ticket_id' => $ticket->id]);
+
         \App\Funciones::sendMailNewGuardian(User::find($request->input('guardian_id')),User::find(Auth::user()->id),$ticket);
         return $ticket;
     }
@@ -45,9 +52,26 @@ class AjaxController extends Controller
         $ticket = Tickets::find($id);
         $ticket->vencimiento = $request->input('vencimiento');
         $ticket->save();
+
+        \App\Models\Auditorias::create(['tipo' => 'cambio de fecha de vencimiento', 'user_id' => Auth::user()->id, 'ticket_id' => $ticket->id]);
+
         \App\Funciones::sendMailUpdateVencimiento($ticket->guardian, $ticket->user,$ticket);
+        
         \App\Funciones::UpdateVencimiento($ticket->guardian, $ticket->user,$ticket);        
         return $ticket;
+    }
+
+    public function setInvitadosTickets(Request $request, $id)
+    {
+        $ticket = \App\Models\Tickets::find($id);
+        $ticket->invitados_id = $request->input('invitados_id');
+        $ticket->save();
+
+        \App\Models\Auditorias::create(['tipo' => 'cambio de invitados', 'user_id' => Auth::user()->id, 'ticket_id' => $ticket->id]);
+
+        \App\Funciones::sendMailInvitados($ticket);
+        Flash::success('Enviado correo de colaboración a invitados');
+        return back();
     }
 
     public function addComentarioTicket(Request $request)
@@ -62,7 +86,7 @@ class AjaxController extends Controller
         Flash::success("Comentario Agregado exitosamente");
         if($request->hasFile('archivo'))
         {
-            $nombre = $comentario->id  . "." . $request->file("archivo")->getClientOriginalExtension();
+            $nombre =  $request->file("archivo")->getClientOriginalName();
 
             // Si Se pidio Encriptar El Archivo
             if($request->get("encriptado") == "true")

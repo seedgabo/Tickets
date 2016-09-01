@@ -46,7 +46,15 @@ class SendEmailsReminderVencido extends Command
          $q->orWhereNull("mail_alert_vencido");
        })
        ->get();
-       
+
+       // Poner en vencido 
+       \App\Models\Tickets::
+       where("vencimiento","<", Carbon::now())
+       ->where(function($q){
+         $q->where("mail_alert_vencido", "=","");
+         $q->orWhereNull("mail_alert_vencido");
+       })->update(["estado" => 'vencido']);
+
        foreach ($vencidos as $ticket) {
             Funciones::sendMailTicketVencido($ticket);
             $ticket->mail_alert_vencido = true;

@@ -9,7 +9,7 @@
             <h3>Un comentario ha sido agregado</h3>
             <div style="background-color: #E8E8E8; border: 1px black solid; border-radius: 50%; text-align:center;">
               
-            Ticket:  {{ App\Models\Tickets::find($comentario->ticket_id)->titulo}} <br>
+            Caso:  {{ App\Models\Tickets::find($comentario->ticket_id)->titulo}} <br>
             Usuario:  {{App\User::find($comentario->user_id)->nombre}}<br>
              @if (isset($comentario->archivo))
                 <span>Archivo: {{$comentario->file()}}</span>
@@ -22,7 +22,7 @@
       <table class="button">
       <tr>
         <td>
-            <a href="{{url('/ticket/ver/'.$comentario->ticket_id)}}"> Ver Ticket</a>
+            <a href="{{url('/ticket/ver/'.$comentario->ticket_id)}}"> Ver Caso</a>
         </td>
       </tr>
     </table>

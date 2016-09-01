@@ -22,7 +22,7 @@
       <table class="button">
       <tr>
         <td>
-            <a href="{{url('/ticket/ver/'.$ticket->id)}}"> Ver Ticket</a>
+            <a href="{{url('/ticket/ver/'.$ticket->id)}}"> Ver Caso</a>
         </td>
       </tr>
     </table>

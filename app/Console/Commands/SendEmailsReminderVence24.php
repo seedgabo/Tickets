@@ -40,7 +40,7 @@ class SendEmailsReminderVence24 extends Command
     public function handle()
     {
        $vencidos = \App\Models\Tickets::
-       where("vencimiento","<", Carbon::now()->subHours(24))
+       where("vencimiento","<", Carbon::now()->addHours(24))
        ->where(function($q){
          $q->where("mail_alert_24", "=","");
          $q->orWhereNull("mail_alert_24");

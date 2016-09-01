@@ -13,7 +13,7 @@ class CategoriasCrudController extends CrudController {
 
         $this->crud->setModel("App\Models\CategoriasTickets");
         $this->crud->setRoute("admin/categorias");
-        $this->crud->setEntityNameStrings('categoria', 'categorias de Tickets');
+        $this->crud->setEntityNameStrings('Categoria', 'categorias de Casos');
 
 
         $this->crud->setFromDb();

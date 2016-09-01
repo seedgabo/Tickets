@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Backpack\CRUD\CrudTrait;
 class Tickets extends Model
 {
+
     use CrudTrait;
     use SoftDeletes;
     public $table = "tickets";
@@ -25,6 +26,9 @@ class Tickets extends Model
         "vencimiento",
         "transferible",
         "encriptado",
+        'canSetVencimiento',
+        'canSetGuardian',
+        'invitados_id'
     ];
 
     protected $hidden = [
@@ -45,7 +49,8 @@ class Tickets extends Model
 		"archivo" => "string",
         "transferible" => "boolean",
         "encriptado" => "boolean",
-        "clave" => "string"
+        "clave" => "string",
+        "invitados_id" => "array"
     ];
 
     /**
@@ -94,6 +99,10 @@ class Tickets extends Model
         return $this->belongsTo('App\Models\CategoriasTickets', 'categoria_id', 'id');
     }
 
+    public function invitados(){
+        return \App\User::whereIn("id",$this->invitados_id)->get();
+    }
+
     public function guardian(){
         return $this->belongsTo("\App\User","guardian_id");
     }
@@ -104,5 +113,14 @@ class Tickets extends Model
 
     public function comentarios(){
         return $this->hasMany("\App\Models\ComentariosTickets","ticket_id","id");
+    }
+
+    public function participantes(){
+        $users = \App\User::orwhere("categorias_id", "LIKE", '%"'. $this->categoria_id . '%')
+            ->orwhereIn("id", [$this->user_id, $this->guardian_id]);
+        if($this->invitados_id != null)
+            $users->orWhereIn("id", $this->invitados_id);
+       $users = $users->get();
+        return $users;
     }
 }

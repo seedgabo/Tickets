@@ -7,7 +7,7 @@
     <table class="container">
         <div>
             <h3>Hola, {{$user->nombre}}</h3>
-             El Usuario {{$creador->nombre}} ha asignado un nuevo Ticket a: <span style="color:red">{{$guardian->nombre}}</span> en la categoria:
+             El Usuario {{$creador->nombre}} ha asignado un nuevo Caso a: <span style="color:red">{{$guardian->nombre}}</span> en la categoria:
             <span style="color:blue;">Categoria: {{\App\Models\CategoriasTickets::find($ticket->categoria_id)->nombre}}<span>
         </div
         <br><br><br>
@@ -22,7 +22,7 @@
       <table class="button">
       <tr>
         <td>
-            <a href="{{url('/ticket/ver/'.$ticket->id)}}"> Ver Ticket</a>
+            <a href="{{url('/ticket/ver/'.$ticket->id)}}"> Ver Caso</a>
         </td>
       </tr>
     </table>

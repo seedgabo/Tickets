@@ -10,25 +10,14 @@ class TicketsCrudController extends CrudController {
 
 	public function __construct() {
         parent::__construct();
-
-        /*
-		|--------------------------------------------------------------------------
-		| BASIC CRUD INFORMATION
-		|--------------------------------------------------------------------------
-		*/
         $this->crud->setModel("App\Models\Tickets");
         $this->crud->setRoute("admin/tickets");
         $this->crud->setEntityNameStrings('Caso', 'Casos');
 
-        /*
-		|--------------------------------------------------------------------------
-		| BASIC CRUD INFORMATION
-		|--------------------------------------------------------------------------
-		*/
 
-		$this->crud->setFromDb();
+        $this->crud->setFromDb();
 
-		// ------ CRUD FIELDS
+
         $this->crud->addField([
             'name' => 'user_id',
             'type' => 'select',
@@ -37,14 +26,16 @@ class TicketsCrudController extends CrudController {
             'attribute' => 'nombre',
             'model' =>'App\Models\usuarios'
         ], 'both');
+
         $this->crud->addField([
             'name' => 'guardian_id',
             'type' => 'select',
-            'label' => 'Responsable',
             'entity' => 'guardian',
+            'label' => 'Responsable',
             'attribute' => 'nombre',
             'model' =>'App\Models\usuarios'
         ], 'both');
+
         $this->crud->addField([
             'name' => 'categoria_id',
             'type' => 'categorias_ticket_radio',
@@ -53,6 +44,7 @@ class TicketsCrudController extends CrudController {
             'attribute' => 'nombre',
             'model' =>'App\Models\categorias'
         ], 'both');
+
         $this->crud->addField([
             'name' => 'estado',
             'label' => "Estado",
@@ -60,18 +52,51 @@ class TicketsCrudController extends CrudController {
             'options' => ['abierto' => 'abierto', 'completado' =>'completado','en curso'=>'en curso','rechazado' => 'rechazado'],
             'allows_null' => false
         ],'both');
+
         $this->crud->addField([
             'name' => 'transferible',
             'label' => "Transferible",
             'type' => 'select_from_array',
-            'options' => ['1' => 'Si', '0' =>'No'],
+            'options' => ['0' =>'No', '1' => 'Si'],
             'allows_null' => false
         ],'both');
+
         $this->crud->addField([
             'name' => 'encriptado',
             'label' => "Encriptado",
             'type' => 'select_from_array',
-            'options' => ['1' => 'Si', '0' =>'No'],
+            'options' => ['0' => 'No' ,'1' => 'Si'],
+            'allows_null' => false
+        ],'both');
+
+        $this->crud->addField([
+                'name' => 'invitados_id',
+                'label' => "Inivtados",
+                'type' => 'select_invitados',
+                'allows_null' => true
+            ],'update');
+
+        $this->crud->addField([
+            'name' => 'canSetVencimiento',
+            'label' => "El responsable puede cambiar la fecha de vencimiento",
+            'type' => 'select_from_array',
+            'options' => ['0' => 'No' ,'1' => 'Si'],
+            'allows_null' => false
+        ],'both');
+
+        $this->crud->addField([
+            'name' => 'canSetGuardian',
+            'label' => "El responsable puede cambiar Transferir",
+            'type' => 'select_from_array',
+            'options' => ['0' => 'No' ,'1' => 'Si'],
+            'allows_null' => false
+        ],'both');
+
+        $this->crud->addField([
+            'name' => 'canSetEstado',
+            'label' => "El responsable puede cambiar el estado",
+            'type' => 'select_from_array',
+            'options' => ['0' => 'No' ,'1' => 'Si'],
             'allows_null' => false
         ],'both');
 
@@ -80,50 +105,61 @@ class TicketsCrudController extends CrudController {
             'type' => 'ckeditor'
         ], 'both');
 
-        // ------ CRUD COLUMNS
-        $this->crud->addColumn([
-            'label' => "Usuario", // Table column heading
-            'type' => "select",
-            'name' => 'Usuario', // the method that defines the relationship in your Model
-            'entity' => 'user', // the method that defines the relationship in your Model
-            'attribute' => "nombre", // foreign key attribute that is shown to user
-            'model' => "App\User", // foreign key model
-            ]);
-        $this->crud->addColumn([
-            'label' => "Guardian", // Table column heading
-            'type' => "select",
-            'name' => 'Guardian', // the method that defines the relationship in your Model
-            'entity' => 'guardian', // the method that defines the relationship in your Model
-            'attribute' => "nombre", // foreign key attribute that is shown to user
-            'model' => "App\User", // foreign key model
-            ]);
-
-            $this->crud->addColumn([
-            'label' => "Categoria", // Table column heading
-            'type' => "select",
-            'name' => 'Categorias', // the method that defines the relationship in your Model
-            'entity' => 'categoria', // the method that defines the relationship in your Model
-            'attribute' => "nombre", // foreign key attribute that is shown to user
-            'model' => "App\Models\Categorias", // foreign key model
-            ]); 
-            $this->crud->addField([
-            'label' => "vencimiento", // Table column heading
+        $this->crud->addField([
+            'label' => "vencimiento", 
             'type' => "text",
             'name' => 'vencimiento',
             'attributes' => ['class'=>'form-control datetimepicker']
+        ]); 
+
+
+
+        $this->crud->addColumn([
+            'label' => "Usuario", 
+            'type' => "select",
+            'name' => 'Usuario', 
+            'entity' => 'user', 
+            'attribute' => "nombre", 
+            'model' => "App\User",
+            ]);
+
+        $this->crud->addColumn([
+            'label' => "Guardian", 
+            'type' => "select",
+            'name' => 'Guardian', 
+            'entity' => 'guardian', 
+            'attribute' => "nombre", 
+            'model' => "App\User",
+            ]);
+
+            $this->crud->addColumn([
+            'label' => "Categoria", 
+            'type' => "select",
+            'name' => 'Categorias', 
+            'entity' => 'categoria', 
+            'attribute' => "nombre", 
+            'model' => "App\Models\Categorias",
             ]); 
-            $this->crud->removeColumns(['transferible', 'encriptado', 'clave', 'archivo', 'user_id', 'guardian_id', 'categoria_id']); // remove an array of columns from the stack
-            $this->crud->removeFields(['clave','archivo']);
+
+
+        $this->crud->removeColumns(['transferible', 'encriptado', 'clave', 'archivo', 'user_id', 'guardian_id', 'categoria_id', 'canSetGuardian', 'canSetVencimiento', 'invitados_id']);
+
+        
+        $this->crud->removeFields(['clave','archivo']);
 
     }
 
 	public function store(StoreRequest $request)
 	{
-		return parent::storeCrud();
+        return parent::storeCrud();
+
 	}
 
 	public function update(UpdateRequest $request)
 	{
-		return parent::updateCrud();
+        $ticket = \App\Models\Tickets::find($request->input("id"));
+        $ticket->invitados_id = $request->input("invitados_id");
+        $ticket->save();
+        return parent::updateCrud();
 	}
 }

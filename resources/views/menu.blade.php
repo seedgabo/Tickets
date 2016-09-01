@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="text-center">
-   <img src="{{asset('map.jpg')}}" style="width:80%" alt="">
+   {{-- <img src="{{asset('map.jpg')}}" style="width:80%" alt=""> --}}
              <div class="col-md-4">
                 <div class="list-group">
                     <li class="list-group-item active">

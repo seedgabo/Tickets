@@ -6,7 +6,7 @@
 <body>
     <table class="container">
         <div>
-            <h3> Ticket: {{$ticket->titulo}} </h3>
+            <h3> Caso: {{$ticket->titulo}} </h3>
             <p>Se ha actualizado el estado del  caso: <b>{{$ticket->estado}}</b></p><br>
             <b>Fecha Límite del Caso:</b>{{$ticket->vencimiento ? \App\Funciones::transdate($ticket->vencimiento) : "No Vence" }}
         </div>

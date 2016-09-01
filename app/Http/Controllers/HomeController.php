@@ -95,7 +95,10 @@ class HomeController extends Controller
 
     public function misTickets(Request $request)
     {
-        $tickets= Tickets::where("user_id",Auth::user()->id)
+        $tickets= Tickets::where(function($q){
+            $q->orWhere("user_id",Auth::user()->id);
+            $q->orWhere("guardian_id",Auth::user()->id);
+        })
         ->orderBy("categoria_id","asc")
         ->orderBy("created_at")
         ->get();
@@ -104,16 +107,13 @@ class HomeController extends Controller
 
     public function todostickets(Request $request)
     {
-        if(Auth::user()->admin != 1)
-        {
-            $categorias = Auth::user()->categorias();
-            $tickets = Tickets::whereIn("categoria_id",$categorias->pluck("id"))
-            ->get();
-        }
-        else
-        {
-            $tickets = Tickets::all();
-        }
+        $tickets = Tickets::
+        orwhereIn("categoria_id",Auth::user()->categorias_id)
+        ->orwhere("user_id",Auth::user()->id)
+        ->orWhere("guardian_id",Auth::user()->id)
+        ->orwhere("invitados_id", "LIKE", '%"'. Auth::user()->id . '%')
+        ->get();
+
         return  view('tickets')->withTickets($tickets);
     }
 
@@ -124,10 +124,15 @@ class HomeController extends Controller
         return  view('tickets')->withTickets($tickets)->withSubcategorias($subCategorias);
     }
 
+    public function ticketAgregar(Request $request)
+    {
+        return view("agregar-caso");
+    }
+
     public function ticketVer(Request $request, $id)
     {
         $ticket= Tickets::find($id);
-        if(!in_array($ticket->categoria_id,Auth::user()->categorias_id))
+        if(!in_array(Auth::user()->id, $ticket->participantes()->pluck('id')->toArray()))
         {
             return view("errors/401");
         }
@@ -140,7 +145,7 @@ class HomeController extends Controller
     public function ticketEliminar(Request $request, $id)
     {
         $ticket =Tickets::find($id);
-        if($ticket->user_id == Auth::user()->id || Auth::user()->admin ==1 )
+        if($ticket->user_id == Auth::user()->id  || Auth::user()->admin ==1 )
         {
             $ticket->delete();
         }

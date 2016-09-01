@@ -6,11 +6,11 @@
 <body>
     <table class="container">
         <div>
-            <h3 style="color:red">Ticket Vencido: {{$ticket->titulo}} de {{$ticket->categoria->nombre}} </h3>
+            <h3 style="color:red">Caso Vencido: {{$ticket->titulo}} de {{$ticket->categoria->nombre}} </h3>
             <p>responda y cierre el ticket lo antes posible, o hable con su administrador</p>
             <div style="background-color: #E2E2E2; ">
               
-              Ticket:  {{$ticket->titulo}} <br>
+              Caso:  {{$ticket->titulo}} <br>
               Usuario:  {{ $user->nombre}}<br>
               Guardian: {{$ticket->guardian->nombre}} <br>
 
@@ -22,7 +22,7 @@
       <table class="button">
       <tr>
         <td>
-            <a href="{{url('/ticket/ver/'.$ticket->id)}}"> Ver Ticket</a>
+            <a href="{{url('/ticket/ver/'.$ticket->id)}}"> Ver Caso</a>
         </td>
       </tr>
     </table>

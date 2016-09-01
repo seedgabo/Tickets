@@ -4,8 +4,9 @@ namespace App;
 
 use App\Empresas;
 use App\Models\CategoriasTickets;
+use Backpack\CRUD\CrudTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Backpack\CRUD\CrudTrait; 
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable

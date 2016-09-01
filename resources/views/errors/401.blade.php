@@ -1,1 +1,0 @@
-<h2>Usted no tiene permisos para acceder a este recurso</h2>

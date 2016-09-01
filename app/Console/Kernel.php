@@ -30,15 +30,15 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('sendMailVencidos')
-            ->everyFiveMinutes()
+            ->everyMinute()
             ->appendOutputTo("ticketsvencidos.txt");
 
         $schedule->command('sendMailVence3')
-            ->everyFiveMinutes()
+            ->everyMinute()
             ->appendOutputTo("ticketsvence3.txt");
             
         $schedule->command('sendMailVence24')
-            ->everyFiveMinutes()
+            ->everyMinute()
             ->appendOutputTo("ticketsvence24.txt");
 
         $schedule->command('backup:clean')->daily();

@@ -51,12 +51,7 @@
                         <tr>
                             <td>{{ $registro->user->nombre }}</td>
                             <td>{{ $registro->tipo }}</td>
-                            <td>@if (isset($registro->ticket_id))
-                                    Caso
-                                @else
-                                    Documento
-                                @endif
-                            </td>
+                            <td>{{$registro->objeto()->titulo}}</td>
                             <td>{{ \App\Funciones::transdate($registro->created_at) }}</td>
                             <td>{{ $registro->auditado() }}</td>
                         </tr> 
@@ -64,6 +59,15 @@
                         <h3>No Hay Registros</h3>
                     @endforelse
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
@@ -72,11 +76,17 @@
 
 
 
-@section('after_scripts'){{--  --}}
+@section('after_scripts')
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/t/bs/jszip-2.5.0,pdfmake-0.1.18,dt-1.10.11,b-1.1.2,b-colvis-1.1.2,b-html5-1.1.2,b-print-1.1.2,cr-1.3.1/datatables.min.css"/>
 
     <script type="text/javascript" src="https://cdn.datatables.net/t/bs/jszip-2.5.0,pdfmake-0.1.18,dt-1.10.11,b-1.1.2,b-colvis-1.1.2,b-html5-1.1.2,b-print-1.1.2,cr-1.3.1/datatables.min.js"></script>
     <script type="text/javascript">
+
+        $('#crudTable tfoot th').each( function () {
+            var title = $(this).text();
+            $(this).html( '<input type="search" style="width: 100px;" class="form-control input-sm"/>' );
+        });
+        
       jQuery(document).ready(function($) {
             table =  $('#crudTable').DataTable({
                 "language": {
@@ -111,7 +121,7 @@
                 responsive: true,
                 ordering: false,
                 colReorder: true,
-                dom: 'rlBtip',
+                dom: 'rlfBtip',
                 buttons: [
                     {
                         extend:    'copyHtml5',
@@ -157,6 +167,17 @@
                         titleAttr: 'Mostrar/Ocultar Columnas'
                     }
                 ]
+            });
+
+            table.columns().every( function () {
+                var that = this;
+                $( 'input', this.footer() ).on( 'keyup change', function () {
+                    if ( that.search() !== this.value ) {
+                        that
+                            .search( this.value )
+                            .draw();
+                    }
+                } );
             });
     });
     </script>

@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Funciones;
 use App\Http\Requests;
+use App\Models\Tickets;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Storage;
+use Laracasts\Flash\Flash;
 
 class ApiController extends Controller
 {
@@ -84,6 +88,36 @@ class ApiController extends Controller
         return \Response::json(['comentarios' => $comentarios, 'ticket' => $ticket], 200);
     }
 
+    public function getMisTickets(Request $request)
+    {
+       $ticketsCreados = Auth::user()->tickets()->with('user','guardian')->get();
+       $ticketsResponsables = Auth::user()->tickets_guardian()->with('user','guardian')->get();
+       return \Response::json(['ticketsCreados'=>$ticketsCreados, 'ticketsResponsables' => $ticketsResponsables], 200);      
+    }
+
+    public function getAllTickets(Request $request)
+    {
+        $tickets = Tickets::
+        orwhereIn("categoria_id",Auth::user()->categorias_id)
+        ->orwhere("user_id",Auth::user()->id)
+        ->orWhere("guardian_id",Auth::user()->id)
+        ->with('user','guardian')->get();
+       return \Response::json(['tickets'=>$tickets], 200);      
+    }
+
+    public function getTicketsAbiertos(Request $request)
+    {
+        $tickets = Auth::user()->tickets()->where("estado","<>", "completado")->with('user','guardian')->get();
+       return \Response::json(['tickets'=>$tickets], 200);      
+    }
+
+    public function getTicketsVencidos(Request $request)
+    {
+        $tickets = Auth::user()->tickets()->where("vencimiento", new Carbon())->with('user','guardian')->get();
+       return \Response::json(['tickets'=>$tickets], 200);      
+    }
+
+
     public function getUsuariosCategoria(Request $request ,$categoria_id)
     {
         $categoria =  \App\Models\CategoriasTickets::find($categoria_id);
@@ -91,18 +125,19 @@ class ApiController extends Controller
         return json_encode($users);
     }
 
-
     public function addTicket(Request $request)
     {
+
         if($request->hasFile('archivo') && $request->get("encriptado") == "true" && !$request->has("clave"))
         {
             return "Debe Ingresar Una contraseña para encriptar el archivo";
         }
         
         $input = $request->except("archivo","enriptado","clave","vencimiento");
+        $input =  array_add($input,'user_id',Auth::user()->id);
+        $input =  array_add($input,'estado','abierto');
         $tickets = \App\Models\Tickets::create($input);
         $tickets->vencimiento = new Carbon($request->input('vencimiento'));
-        $tickets->user_id = Auth::user()->id;
         $tickets->save();
         if($request->hasFile('archivo'))
         {   
@@ -147,7 +182,7 @@ class ApiController extends Controller
 
         if($request->hasFile('archivo'))
         {
-            $nombre = $comentario->id  . "." . $request->file("archivo")->getClientOriginalExtension();
+            $nombre = $request->file("archivo")->getClientOriginalName();
             if($request->get("encriptado") == "true")
             {                   
                 $comentario->encriptado = true;
@@ -216,4 +251,23 @@ class ApiController extends Controller
             'Content-Disposition' => 'attachment; filename="' . $comentario->archivo . '"'
         ));
     }
+
+    public function busqueda(Request $request)
+    {
+        $query = $request->input('query');
+        $documentos = \App\Models\Documentos::where("activo","=","1")->where("titulo","like","%".$query."%")
+        ->orwhere("descripcion","like","%".$query."%")->with('categoria')->get();
+
+        $tickets = \App\Models\Tickets::where("titulo","like","%".$query."%")
+        ->orwhere("contenido","like","%".$query."%")
+        ->whereIn("categoria_id",Auth::user()->categorias()->pluck("id"))
+        ->with('user','guardian')->get();
+
+        $categorias = \App\Models\CategoriasTickets::where("nombre","like", "%". $query ."%")
+        ->whereIn("id",Auth::user()->categorias()->pluck("id"))
+        ->get();
+        
+        return \Response::json(['tickets' => $tickets, 'documentos' => $documentos, 'categorias' => $categorias]);
+    }
+    
 }

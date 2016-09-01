@@ -164,6 +164,19 @@ class Funciones
     }
 
 
+    public static function sendMailInvitados($ticket)
+    {
+        $guardian = $ticket->guardian;
+        $user = $ticket->user;
+        Mail::send('emails.invitados-tickets', ["guardian" =>  $guardian,"ticket"=>$ticket,"user" => $user], function ($m)   use ($ticket)
+        {
+            $m->from('SistemaSeguimiento@duflosa.com', "Sistema de Seguimiento");
+            $m->to($ticket->invitados()->pluck('email')->toArray())->subject('Has sido invitado a participar en un caso');
+        });   
+
+        Dispositivo::sendPush("Has sido invitado a participar en un caso","Caso:" .$ticket->titulo, $ticket->invitados_id);
+    }
+
     public static function sendMailUpdateVencimiento($user,$guardian, $ticket)
     {
         Mail::send('emails.changeVencimiento', ["guardian" =>  $guardian,"ticket"=>$ticket,"user" => $user], function ($m)   use ($guardian)

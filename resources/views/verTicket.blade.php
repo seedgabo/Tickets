@@ -20,6 +20,7 @@
 		<li class="active">{{$ticket->titulo}}</li>
 	</ol>
 </div>
+
 	<div class="col-md-12">
 		<div class="panel panel-primary hover">
 		   <div style="text-transform: uppercase;" class="panel-heading text-center">
@@ -43,19 +44,19 @@
 			</div>
 			<div class="panel-footer">
 			<div class="container-fluid">
-				@if (Auth::user()->id == $ticket->guardian_id || Auth::user()->id == $ticket->user_id)
+				@if (Auth::user()->id == $ticket->user_id || (Auth::user()->id == $ticket->guardian_id && $ticket->canSetEstado == 1 ))
 				<div class="col-md-3 form-inline">
 					{!! Form::label('estado', 'Estado:') !!}
 	    			{!! Form::select('estado', ['abierto' => 'abierto', 'completado' => 'completado', 'en curso' => 'en curso', ' rechazado' => ' rechazado'], $ticket->estado, ['id'=> 'estado','class' => 'form-control chosen', 'onChange' => "cambiarEstado($ticket->id , this.value)"]) !!}
 				</div>
-				@if ($ticket->transferible == 1 || $ticket->guardian_id == Auth::user()->id)
+				@endif
+				@if ($ticket->transferible == 1  && (Auth::user()->id == $ticket->user_id  || ( $ticket->canSetGuardian == 1   && Auth::user()->id == $ticket->guaridan_id)))
 				<div class="col-md-4 form-inline">
 					{!! Form::label('guardian', 'Responsable:') !!}
 	    			{!! Form::select('guardian',$ticket->categoria->users()->lists("nombre","id"), $ticket->guardian_id, ['id'=> 'estado','class' => 'form-control chosen', 'onChange' => "cambiarGuardian($ticket->id , this.value)"]) !!}
 				</div>
 				@endif
-				@endif
-				@if(Auth::user()->id == $ticket->user_id)
+				@if(Auth::user()->id == $ticket->user_id ||($ticket->canSetVencimiento == 1 && Auth::user()->id  == $ticket->guardian_id))
 				<div class="col-md-3 form-inline row">
 					{!! Form::label('vencimiento', 'Vencimiento:') !!}
 					{!! Form::text('vencimiento', $ticket->vencimiento,['id'=> 'vencimiento','class' => 'form-control pre datetimepicker', 'onblur' => "cambiarVencimiento($ticket->id , this.value)"]) !!}
@@ -71,7 +72,7 @@
 	</div>
 	
 	<h2 class="text-center"> Seguimiento</h2>
-	<div class="col-md-12 well hover" >
+	<div class="col-md-12 well hover">
 		<div class="list-group" style="overflow-y: scroll; max-height: 400px;">
 			@forelse ($comentarios as $comentario)
 			<div class="list-group-item">
@@ -119,7 +120,7 @@
 				<div class="form-group @if($errors->first('emails[]')) has-error @endif">
 				    {!! Form::label('emails[]', 'Enviar a', ['class' => 'col-sm-4 control-label']) !!}
 				    <div class="col-sm-8">
-				    	{!! Form::select('emails[]',$ticket->categoria->users()->lists("nombre","id"),[$ticket->user_id,$ticket->guardian_id], ['id' => 'emails[]', 'class' => 'form-control chosen', 'required' => 'required', 'multiple']) !!}
+				    	{!! Form::select('emails[]', $ticket->participantes()->pluck('nombre','id')->toArray() ,[$ticket->user_id,$ticket->guardian_id], ['id' => 'emails[]', 'class' => 'form-control chosen', 'required' => 'required', 'multiple']) !!}
 				    	<small class="text-danger">{{ $errors->first('emails[]') }}</small>
 					</div>
 				</div>
@@ -157,9 +158,19 @@
 			</div>
 		{!! Form::close() !!}
 	</div>
+
+		<h2 class="text-primary text-center">{!! Form::label('invitados_id[]', 'Invitados a este caso') !!} </h2>
+		@if (Auth::user()->id == $ticket->user_id)
+		{!! Form::open(['method' => 'POST', 'url' => url('ajax/setInvitadosTickets/'. $ticket->id), 'class' => 'form-horizontal well hover']) !!}
+		    {!! Form::select('invitados_id[]',\App\User::all()->pluck("nombre","id")->toArray(), $ticket->invitados_id, ['id' => 'invitados_id[]', 'class' => 'form-control chosen', 'required' => 'required', 'multiple']) !!}
+		    <small class="text-danger">{{ $errors->first('invitados_id[]') }}</small>
+			{!! Form::submit('Invitar', ['class' => 'btn btn-info']) !!}
+			<br>
+		{!! Form::close() !!}
+		@endif
  
 
-	 <div class="modal fade" id="modal-editar">
+ 	<div class="modal fade" id="modal-editar">
 		 <div class="modal-dialog modal-lg">
 			 <div class="modal-content">
 				 <div class="modal-header">
@@ -186,7 +197,7 @@
 				 </div>
 			 </div>
 		 </div>
-	 </div>
+	</div>
  
 
 	<script>
@@ -248,24 +259,21 @@
 
 		function verArchivo(url)
 		{
-			var clave =  prompt("Ingrese la Contraseña");
-			if (clave)
-				window.location = url + "/" +clave;
-			else
-				alert("debe ingresar una clave valida");
+			var promptDialog = new ax5.ui.dialog();
+            promptDialog.prompt({
+	                input: {
+	                    clave: {label:"clave", type:"password", placeholder: "Clave del archivo encriptado"}
+	                }
+	            }, function(){
+					var clave =  this.clave;
+					if (clave)
+						window.location = url + "/" + clave;
+					else
+						alert("debe ingresar una clave valida");
+	            });
 		}
 
 		$(document).ready(function() {
-			// $('#form-comentario').submit(function(event) {
-			// 	$.toast({
-	  //           		heading: '<h3 class="text-center">Enviando Comentario <br> <i class="fa fa-spinner fa-pulse"></i></h3>',
-	  //           		text: '',
-	  //           		showHideTransition: 'slide',
-	  //           		icon: 'success',
-	  //           		position: 'mid-center',
-   //          	})
-			// })
-
 		    $(".file-bootstrap").fileinput({
 		        maxFileSize: 10000,
 				showUpload: false,
@@ -284,5 +292,8 @@
 		});
 
 	</script>
+	<link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/ax5ui/ax5ui-dialog/master/dist/ax5dialog.css" />
+	<script type="text/javascript" src="https://cdn.rawgit.com/ax5ui/ax5core/master/dist/ax5core.min.js"></script>
+	<script type="text/javascript" src="https://cdn.rawgit.com/ax5ui/ax5ui-dialog/master/dist/ax5dialog.min.js"></script>
 </div>
 @stop

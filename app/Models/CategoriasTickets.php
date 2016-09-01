@@ -20,14 +20,14 @@ class CategoriasTickets extends Model
         "id",
         "nombre",
 		"descripción",
-        "parent_id"
+        "parent_id",
         ];
 
 
     protected $casts = [
             "nombre" => "string",
     		"descripción" => "string",
-            "parent_id" => "integer"
+            "parent_id" => "integer",
         ];
 
     public static $rules = [
@@ -62,7 +62,8 @@ class CategoriasTickets extends Model
         return $users;
     }
 
-    public function getButtonAddMasive(){
+    public function getButtonAddMasive()
+    {
         return "<a class='btn btn-default btn-xs' href='categorias-masivas/" . $this->id . "'><i class='fa fa-user-plus'></i> Agregar Usuarios</a>";
     }
 

@@ -50,7 +50,7 @@ class ComentariosTickets extends Model
         }
         else
         {
-            return  asset("archivos/ComentariosTickets/" . $this->id . "." . explode(".", $this->archivo)[1]);
+            return  asset("archivos/ComentariosTickets/" . $this->archivo);
         }
     }
 

@@ -10,7 +10,7 @@
             <p>A usted se le ha transferido un ticket</p>
             <div style="background-color: #DCDCDC; border: dashed 1px black; ">
               
-              Ticket:  {{$ticket->titulo}} <br>
+              Caso:  {{$ticket->titulo}} <br>
               Usuario:  {{ $user->nombre}}<br>
 
             </div>
@@ -21,7 +21,7 @@
       <table class="button">
       <tr>
         <td>
-            <a href="{{url('/ticket/ver/'.$ticket->id)}}"> Ver Ticket</a>
+            <a href="{{url('/ticket/ver/'.$ticket->id)}}"> Ver Caso</a>
         </td>
       </tr>
     </table>
