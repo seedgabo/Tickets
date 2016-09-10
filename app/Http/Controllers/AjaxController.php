@@ -16,7 +16,10 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Laracasts\Flash\Flash;
 
 class AjaxController extends Controller
@@ -134,6 +137,48 @@ class AjaxController extends Controller
         $categoria =  Input::get("depdrop_all_params")["categoria"];
         $users = User::where("categorias_id", "LIKE", '%"'. $categoria. '"%')->select("nombre as name","id")->get();
         return json_encode(["output" => $users, "selected" => ""]);
+    }
+
+    public function email()
+    {
+        if (Input::has('to'))
+        {
+            $validator = Validator::make(Input::all(),
+            array('contenido'=> 'required|min:8',
+            'title'=> 'required|min:3|max:50',
+            'to'=> 'required',
+            'file' => 'max:10240|mimes:jpeg,bmp,png,doc,docx,xls,xlsx,pdf,jpg,gif,sql,txt,ppt,pptx'
+        ));
+        if ($validator->fails())
+        {
+            $salida ['message'] =  $validator->messages()->first();
+            return Redirect::back()->withErrors($validator);
+        }
+        foreach (Input::get('to') as $to)
+        {
+            $persona = User::where("email","=",$to)->first();
+            $residencia = $persona->residencia;
+            Mail::send('emails.basic',
+            array('title' => Input::get('title'), 'contenido' => Input::get('contenido'), 'persona'=> $persona , 'residencia' => $residencia),
+            function($message) use ($to)
+            {
+                $message->to($to)->subject(Input::get('title'));
+                if(Input::hasFile('file'))
+                {
+                    $message->attach(Input::file('file')->getRealPath(), array('as' =>Input::file('file')->getClientOriginalName()));
+                }
+            });
+
+        };
+        $salida['status']  = "ok";
+        $salida['message'] = "Mensaje Enviado entregado a los Destinatarios:  ";
+        foreach (Input::get('to') as $key => $correo) {
+            $salida['message'] .= $correo  .",  ";
+        }
+            \Alert::success("Mensaje Enviado")->flash();
+            return  redirect('admin');
+        }
+        return "error No Ha Seleccionado ningun Destinatario";
     }
 
 }

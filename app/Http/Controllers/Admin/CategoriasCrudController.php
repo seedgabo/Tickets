@@ -5,6 +5,7 @@ use Backpack\CRUD\app\Http\Controllers\CrudController;
 // VALIDATION: change the requests to match your own file names if you need form validation
 use App\Http\Requests\CategoriasRequest as StoreRequest;
 use App\Http\Requests\CategoriasRequest as UpdateRequest;
+use Illuminate\Support\Facades\Auth;
 
 class CategoriasCrudController extends CrudController {
 

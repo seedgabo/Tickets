@@ -12,11 +12,11 @@ return [
     */
 
     // Project name. Shown in the breadcrumbs and a few other places.
-    'project_name' => 'Duflo Sas',
+    'project_name' => 'Dufo  Sas',
 
     // Menu logos
     'logo_lg'   => '<b>Matriz</b>',
-    'logo_mini' => '<img src="../img/logo.png" class="img-circle" style="height:40px" />' ,
+    'logo_mini' => '<img src="http://190.85.8.84:8080/img/logo.png" class="img-circle" style="height:40px" />' ,
     // Developer or company name. Shown in footer.
     'developer_name' => 'Gabriel Bejarano',
 

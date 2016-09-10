@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
         Commands\SendEmailsReminderVencido::class,
         Commands\SendEmailsReminderVence3::class,
         Commands\SendEmailsReminderVence24::class,
+        Commands\alertas::class,
     ];
 
     /**
@@ -40,6 +41,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('sendMailVence24')
             ->everyMinute()
             ->appendOutputTo("ticketsvence24.txt");
+
+        $schedule->command('send:Alertas')
+            ->everyMinute()
+            ->appendOutputTo("alertas.txt");
 
         $schedule->command('backup:clean')->daily();
         $schedule->command('backup:run')->daily();

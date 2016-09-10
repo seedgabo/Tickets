@@ -23,13 +23,13 @@
 	{{-- Categoria --}}
 	<div class="form-group @if($errors->first('categoria_id')) has-error @endif">
 		{!! Form::label('categoria_id', 'Categoria') !!}
-		{!! Form::select('categoria_id',Auth::user()->categorias()->lists("nombre","id"), null, ['id' => 'categoria', 'class' => 'form-control chosen', 'required' => 'required']) !!}
+		{!! Form::select('categoria_id',\App\Models\Categorias::all()->lists("nombre","id"), null, ['id' => 'categoria', 'class' => 'form-control chosen', 'required' => 'required']) !!}
 		<small class="text-danger">{{ $errors->first('categoria_id') }}</small>
 	</div>
 
 	{{-- Guardian --}}
 	<div class="form-group @if($errors->first('guardian_id')) has-error @endif">
-		{!! Form::label('guardian_id', 'Asignar a:') !!}
+		{!! Form::label('guardian_id', 'Asignar a: (Responsable)') !!}
 		{!! Form::select('guardian_id',\App\User::lists("nombre","id"), null, ['id' => 'guardian_id', 'class' => 'form-control chosen depdrop', 'required' => 'required']) !!}
 		<small class="text-danger">{{ $errors->first('guardian_id') }}</small>
 	</div>	
@@ -57,7 +57,7 @@
 
 		{{-- Transerible --}}
 		<div class="form-group @if($errors->first('transferible')) has-error @endif">
-			{!! Form::label('transferible', 'Transerible?', ['class' => 'col-sm-3 control-label']) !!}
+			{!! Form::label('transferible', '¿Este caso es transferible?', ['class' => 'col-sm-3 control-label']) !!}
 			<div class="col-sm-9">
 				{!! Form::select('transferible',[1=>"Si",0=> "No"], 1, ['id' => 'transferible', 'class' => 'form-control']) !!}
 				<small class="text-danger">{{ $errors->first('transferible') }}</small>
@@ -68,21 +68,21 @@
 				
 		{{-- canSetVencimiento --}}
 		<div class="form-group{{ $errors->has('canSetVencimiento') ? ' has-error' : '' }}">
-		    {!! Form::label('canSetVencimiento', 'EL Responsable puede cambiar el seguimiento?') !!}
+		    {!! Form::label('canSetVencimiento', 'El Responsable puede cambiar la  fecha de vencimiento?') !!}
 		    {!! Form::select('canSetVencimiento',['0' => 'No', '1' => 'Si'], null, ['id' => 'canSetVencimiento', 'class' => 'form-control', 'required' => 'required']) !!}
 		    <small class="text-danger">{{ $errors->first('canSetVencimiento') }}</small>
 		</div>
 
 			{{-- canSetGuardian --}}
 		<div class="form-group{{ $errors->has('canSetGuardian') ? ' has-error' : '' }}">
-		    {!! Form::label('canSetGuardian', 'EL Responsable puede cambiar el Responsable?') !!}
+		    {!! Form::label('canSetGuardian', '¿El Responsable puede asignar este caso a otra persona?') !!}
 		    {!! Form::select('canSetGuardian',['0' => 'No', '1' => 'Si'], null, ['id' => 'canSetGuardian', 'class' => 'form-control', 'required' => 'required']) !!}
 		    <small class="text-danger">{{ $errors->first('canSetGuardian') }}</small>
 		</div>
 
 		{{-- canSetEstado --}}
 		<div class="form-group{{ $errors->has('canSetEstado') ? ' has-error' : '' }}">
-		    {!! Form::label('canSetEstado', 'EL Responsable puede cambiar el estado?') !!}
+		    {!! Form::label('canSetEstado', '¿EL Responsable puede cambiar el estado del caso?') !!}
 		    {!! Form::select('canSetEstado',['0' => 'No', '1' => 'Si'], null, ['id' => 'canSetEstado', 'class' => 'form-control', 'required' => 'required']) !!}
 		    <small class="text-danger">{{ $errors->first('canSetEstado') }}</small>
 		</div>
@@ -126,7 +126,7 @@
 			$(".file-bootstrap").fileinput({
 		        maxFileSize: 10000,
 				showUpload: false,
-		        browseClass: "btn btn-success",
+		        browseClass: "btn btn-default",
 		        browseLabel: "Subir",
 		        browseIcon: "<i class=\"glyphicon glyphicon-upload\"></i> ",
 		        removeClass: "btn btn-danger",

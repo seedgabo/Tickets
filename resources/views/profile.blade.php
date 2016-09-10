@@ -65,6 +65,6 @@
 		{!! Form::close() !!}
 
 		<br>
-		<a href="" class="btn btn-block btn-success"> <i class="fa fa-android fa-lg"></i> Obtener para android</a>
+		<a href="https://play.google.com/store/apps/details?id=com.seedgabo.matseg2304" class="btn btn-block btn-success"> <i class="fa fa-android fa-lg"></i> Obtener para android</a>
 	</div>
 @stop

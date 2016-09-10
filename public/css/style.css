@@ -1,3 +1,23 @@
+.vencido{
+    animation: vencido 1s infinite linear;
+    animation-direction: alternate;
+    -webkit-animation: vencido 1s infinite linear;
+    -webkit-animation-direction: alternate;
+}
+
+@keyframes vencido {
+    from {background-color: #D33724; color:white;}
+    to {background-color: white;}
+}
+
+@-webkit-keyframes vencido {
+    from {background-color: #D33724; color:white;}
+    to {background-color: white;}
+}
+
+
+//Estilos propios
+
 .hover
 {
 	-webkit-transition: all .5s ease-in-out;

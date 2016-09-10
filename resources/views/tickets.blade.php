@@ -18,6 +18,29 @@
 		<hr>
 		<h3 class="text-center text-primary">Casos</h3>
 	@endif
+	<div class="well">
+		{!! Form::open(['method' => 'GET',  'class' => 'form-inline']) !!}
+		
+		    <div class="form-group{{ $errors->has('desde') ? ' has-error' : '' }}">
+		        {!! Form::label('desde', 'Desde:', ['class' => 'col-sm-3 control-label']) !!}
+		        <div class="col-sm-9">
+		        	{!! Form::date('desde',$desde, ['class' => 'form-control', 'required' => 'required']) !!}
+		        	<small class="text-danger">{{ $errors->first('desde') }}</small>
+		        </div>
+		    </div>
+
+		    <div class="form-group{{ $errors->has('hasta') ? ' has-error' : '' }}">
+		        {!! Form::label('hasta', 'Hasta:') !!}
+		        {!! Form::date('hasta',$hasta, ['class' => 'form-control', 'required' => 'required']) !!}
+		        <small class="text-danger">{{ $errors->first('hasta') }}</small>
+		    </div>
+		
+		    <div class="btn-group pull-right">
+		        {!! Form::submit("Buscar", ['class' => 'btn btn-success']) !!}
+		    </div>
+		
+		{!! Form::close() !!}
+	</div>
 	<div class="table-responsive">
 		<table class="table table-hover datatable">
 			<thead>
@@ -35,7 +58,7 @@
 			</thead>
 			<tbody>
 			 @forelse ($tickets as $ticket)
-				<tr class="@if($ticket->estado == "completado") success @endif @if($ticket->estado == "rechazado") danger @endif @if($ticket->estado == "en curso") info @endif @if($ticket->estado == "abierto") warning @endif">
+				<tr class="@if($ticket->estado == "completado") success @endif @if($ticket->estado == "rechazado") danger @endif @if($ticket->estado == "en curso") info @endif @if($ticket->estado == "abierto") warning @endif @if($ticket->estado == "vencido") vencido @endif">
 					<td>{{$ticket->id}}</td>
 					<td>
 						<a class="btn btn-link" style="text-transform: uppercase;" href="{{url("ticket/ver/".$ticket->id)}}">

@@ -1,10 +1,9 @@
 <?php namespace App\Http\Controllers\Admin;
 
-use Backpack\CRUD\app\Http\Controllers\CrudController;
-// VALIDATION: change the requests to match your own file names if you need form validation
 use App\Http\Requests\UsuariosRequest as StoreRequest;
 use App\Http\Requests\UsuariosRequest as UpdateRequest;
-
+use Backpack\CRUD\app\Http\Controllers\CrudController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UsuariosCrudController extends CrudController {
@@ -12,24 +11,16 @@ class UsuariosCrudController extends CrudController {
 	public function __construct() {
         parent::__construct();
 
-        /*
-		|--------------------------------------------------------------------------
-		| BASIC CRUD INFORMATION
-		|--------------------------------------------------------------------------
-		*/
+        
+        $this->verificarPermisos();
+
         $this->crud->setModel("App\Models\Usuarios");
         $this->crud->setRoute("admin/usuarios");
         $this->crud->setEntityNameStrings('usuario', 'usuarios');
 
-        /*
-		|--------------------------------------------------------------------------
-		| BASIC CRUD INFORMATION
-		|--------------------------------------------------------------------------
-		*/
 		$this->crud->setFromDb();
         $this->crud->removeField('categorias_id','both');
-        $this->crud->removeColumn('categorias_id');
-        $this->crud->removeColumn('admin');
+        $this->crud->removeColumns(['categorias_id','admin','medico']);
 
         $this->crud->addField([
             'name' => 'categorias',
@@ -40,6 +31,12 @@ class UsuariosCrudController extends CrudController {
         $this->crud->addField([
             'name'=> 'admin',
             'label' => 'Administrador',
+            'type' => 'checkbox'
+        ], 'both');
+
+        $this->crud->addField([
+            'name'=> 'medico',
+            'label' => 'Es Médico?',
             'type' => 'checkbox'
         ], 'both');
 
@@ -55,8 +52,13 @@ class UsuariosCrudController extends CrudController {
             'function_name' => 'getCategoriasText', // the method in your Model
         ]);
 
-        $this->crud->addButtonFromModelFunction("line", "boton", "getButtonAuditar", "end");
+        $this->crud->addColumn([
+            'label' => "Médico", // Table column heading
+            'type' => "model_function",
+            'function_name' => 'getMedicoText', // the method in your Model
+        ]);
 
+        $this->crud->addButtonFromModelFunction("line", "boton", "getButtonAuditar", "end");
     }
 
     
@@ -65,10 +67,10 @@ class UsuariosCrudController extends CrudController {
 	{
 
         $data = $request->except("_method","_token");
-        $usuario= new \App\Models\Usuarios;
+        $usuario= new \App\User;
         $usuario->fill($data);
         $usuario->admin = $request->input('admin', '0');
-        $usuario->password = Hash::make($request->input('password', 'Tickets6325'));
+        $usuario->password = Hash::make($request->input('email', 'Casos6325'));
         $usuario->save();
         \App\Funciones::sendMailUser($usuario);
         \Alert::success(trans('backpack::crud.insert_success'))->flash();
@@ -77,14 +79,31 @@ class UsuariosCrudController extends CrudController {
 
 	public function update(UpdateRequest $request, $id)
 	{
-		$data = $request->except("_method","_token");
-        $usuario= \App\Models\Usuarios::find($id);
+		$data = $request->except("_method","_token","deleted_at");
+        $usuario= \App\User::find($id);
         $usuario->fill($data);
-        $usuario->admin = $request->input('admin', '0');
-        if ($request->has('password') && $request->input('password') != "")
-            $usuario->password = Hash::make($request->input('password'));
+        $usuario->admin = $request->input('admin', false);
+        $usuario->medico = $request->input('medico', false);
         $usuario->save();
         \Alert::success(trans('backpack::crud.update_success'))->flash();
         return redirect('admin/usuarios');
 	}
+
+
+
+    public function verificarPermisos()
+    {
+            if(!Auth::user()->can('Agregar Usuarios') &&  !Auth::user()->hasRole('SuperAdmin'))
+            {
+              $this->crud->denyAccess(['create']);
+            }
+            if(!Auth::user()->can('Editar Usuarios') &&  !Auth::user()->hasRole('SuperAdmin'))
+            {
+              $this->crud->denyAccess(['update']);
+            }
+            if(!Auth::user()->can('Eliminar Usuarios') &&  !Auth::user()->hasRole('SuperAdmin'))
+            {
+              $this->crud->denyAccess(['delete']);
+            }
+    }
 }

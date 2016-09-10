@@ -9,7 +9,9 @@
 
     <link rel="shortcut icon" type="image/png" href="{{asset('img/favicon.png')}}"/>
 
-    <title>Matriz de Seguimiento</title>
+    <title>
+      {{ isset($title) ? $title.' :: '.config('backpack.base.project_name').' Matriz' : config('backpack.base.project_name').' Matriz' }}
+    </title>
 
     <!-- Bootstrap Core CSS -->
     <link href="{{asset('bower_components/bootstrap/dist/css/bootstrap.css')}}" rel="stylesheet">
@@ -43,7 +45,6 @@
 
     <script type="text/javascript" src="https://cdn.datatables.net/t/bs/jszip-2.5.0,pdfmake-0.1.18,dt-1.10.11,b-1.1.2,b-colvis-1.1.2,b-html5-1.1.2,b-print-1.1.2,cr-1.3.1/datatables.min.js"></script>
 
-    <script src="{{asset('js/qrcode.min.js')}}"></script>
 
     @include('layouts.partials.initialscript')
     

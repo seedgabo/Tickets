@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Funciones;
 use App\Http\Requests;
+use App\Models\Casos_medicos;
 use App\Models\Tickets;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -33,7 +34,15 @@ class ApiController extends Controller
         return \Response::json(array_values($categorias), 200);
     }
 
-    public function getTickets (Request $request, $categoria)
+    public function getAllCategorias (Request $request)
+    {
+
+        $categorias = \App\Models\Categorias::orderBy("nombre")->get();
+
+        return \Response::json($categorias, 200);
+    }
+
+    public function getTickets(Request $request, $categoria)
     {
 
         $tickets = \App\Models\Tickets::where("categoria_id",$categoria)
@@ -101,7 +110,10 @@ class ApiController extends Controller
         orwhereIn("categoria_id",Auth::user()->categorias_id)
         ->orwhere("user_id",Auth::user()->id)
         ->orWhere("guardian_id",Auth::user()->id)
+        ->orwhere("invitados_id", "LIKE", '%"'. Auth::user()->id . '%')
         ->with('user','guardian')->get();
+
+
        return \Response::json(['tickets'=>$tickets], 200);      
     }
 
@@ -258,10 +270,14 @@ class ApiController extends Controller
         $documentos = \App\Models\Documentos::where("activo","=","1")->where("titulo","like","%".$query."%")
         ->orwhere("descripcion","like","%".$query."%")->with('categoria')->get();
 
-        $tickets = \App\Models\Tickets::where("titulo","like","%".$query."%")
+        $tickets = Tickets::orwhere("titulo","like","%".$query."%")
         ->orwhere("contenido","like","%".$query."%")
-        ->whereIn("categoria_id",Auth::user()->categorias()->pluck("id"))
-        ->with('user','guardian')->get();
+        ->where(function($q){
+           $q->orwhereIn("categoria_id",Auth::user()->categorias_id)
+            ->orwhere("user_id",Auth::user()->id)
+            ->orWhere("guardian_id",Auth::user()->id)
+            ->orwhere("invitados_id", "LIKE", '%"'. Auth::user()->id . '%');
+        })->with("user",'guardian')->get();
 
         $categorias = \App\Models\CategoriasTickets::where("nombre","like", "%". $query ."%")
         ->whereIn("id",Auth::user()->categorias()->pluck("id"))
@@ -269,5 +285,53 @@ class ApiController extends Controller
         
         return \Response::json(['tickets' => $tickets, 'documentos' => $documentos, 'categorias' => $categorias]);
     }
-    
+
+
+    //medicos
+    public function getPacientes(Request $request)
+    {
+        $pacientes =  \App\Models\Paciente::with('casos','incapacidades','medico','arl','eps','puesto','fondo');
+        if($request->has("query"))
+        {
+            $query = $request->input('query');
+            $pacientes = $pacientes->orWhere("nombres","LIKE","%".  $query . "%");
+            $pacientes = $pacientes->orWhere("apellidos","LIKE","%". $query . "%");
+            $pacientes = $pacientes->orWhere("cedula","LIKE","%". $query . "%");
+        }
+        $pacientes =$pacientes->get();
+        return  response()->json(['pacientes'=> $pacientes]);
+    }  
+
+
+    public function getCaso (Request $request, $id)
+    {
+        $caso = \App\Models\Casos_medicos::with('paciente','medico','incapacidades','archivos','puesto')->find($id);
+        $recomendaciones = $caso->recomendaciones()->with("user")->get();
+        $incapacidades = $caso->incapacidades()->with("medico","eps","cie10","paciente")->get();
+        return  response()->json(['caso'=> $caso, 'recomendaciones' => $recomendaciones , 'incapacidades' => $incapacidades]);
+    }
+
+    public function getIncapacidad (Request $request, $id)
+    {
+        $incapacidad = \App\Models\Incapacidad::with('paciente','eps','caso','cie10','medico')->find($id);
+        return  response()->json(['incapacidad' => $incapacidad]);
+    }
+
+    public function iniciarSeguimiento(Request $request, $id)
+    {
+      $caso_medico = Casos_medicos::findorFail($id);
+      $ticket = \App\Models\Tickets::Create([
+            "titulo" => "Seguimiento al Caso del paciente " . $caso_medico->paciente->full_name,
+            "contenido" => "Origen del Caso: " . $caso_medico->origen_del_caso,
+            "categoria_id" => Casos_medicos::categoria_id_casos,
+            "user_id" =>  Auth::user()->id,
+            "guardian_id" => Auth::user()->id,
+            "estado" => "abierto",
+            "transferible" => "1",
+        ]);
+      $caso_medico->ticket_id = $ticket->id;
+      $caso_medico->save();
+      \App\Funciones::sendMailNewTicket($ticket, $ticket->user, $ticket->guardian);
+      return $ticket;
+    }
 }

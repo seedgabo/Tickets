@@ -21,7 +21,7 @@ class isAdmin
         else
         {
             $request->session()->flash('error', "Usted no tiene permisos para esta opción");
-            return redirect()->back()->withInput();
+            return redirect('/')->withInput();
         }
     }
 }

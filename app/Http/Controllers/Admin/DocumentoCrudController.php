@@ -5,11 +5,13 @@ use Backpack\CRUD\app\Http\Controllers\CrudController;
 // VALIDATION: change the requests to match your own file names if you need form validation
 use App\Http\Requests\DocumentoRequest as StoreRequest;
 use App\Http\Requests\DocumentoRequest as UpdateRequest;
+use Illuminate\Support\Facades\Auth;
 
 class DocumentoCrudController extends CrudController {
 
 	public function __construct() {
         parent::__construct();
+        $this->verificarPermisos();
 
 
         $this->crud->setModel("App\Models\Documentos");
@@ -117,4 +119,20 @@ class DocumentoCrudController extends CrudController {
         $documento->save();
          return $response;
 	}
+
+    public function verificarPermisos()
+    {
+            if(!Auth::user()->can('Agregar Documentos') &&  !Auth::user()->hasRole('SuperAdmin'))
+            {
+              $this->crud->denyAccess(['create']);
+            }
+            if(!Auth::user()->can('Editar Documentos') &&  !Auth::user()->hasRole('SuperAdmin'))
+            {
+              $this->crud->denyAccess(['update']);
+            }
+            if(!Auth::user()->can('Eliminar Documentos') &&  !Auth::user()->hasRole('SuperAdmin'))
+            {
+              $this->crud->denyAccess(['delete']);
+            }
+    }
 }

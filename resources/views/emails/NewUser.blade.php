@@ -17,7 +17,7 @@
         Su usuario ha sido creado con exito
 
         Usuario:  {{$user->email}} <br>
-        Contraseña: Tickets6325 <br>
+        Contraseña: Casos6325 <br>
     </div>
     <strong style="color:red"> Se Recomienda cambia la clave lo antes posible</strong>
 

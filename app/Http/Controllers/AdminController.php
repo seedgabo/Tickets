@@ -71,4 +71,52 @@ class AdminController extends Controller
         ->withLimit($desde)
         ->withRegistros($registros);
     }
+
+
+    public function emailPorDepartamento(Request $request)
+    {
+        $correos = \App\Models\Paciente::whereIn("departamento",$request->input("filtro"))->get()
+        ->lists("email","full_name");
+        $filtro = \App\Models\Paciente::distinct()->select("departamento")->pluck("departamento","departamento")->toArray();
+
+        return view("Admin.email")
+        ->withFiltro($filtro)
+        ->withCorreos($correos)
+        ->withActivo("Por Departamento");
+    }
+
+    public function emailporPuesto(Request $request)
+    {
+        $correos = \App\Models\Paciente::whereIn("puesto_id",$request->input("filtro"))->get()
+        ->lists("email","full_name");
+        $filtro = \App\Models\Puesto::distinct()->select("id","nombre")->pluck("nombre","id")->toArray();
+
+        return view("Admin.email")
+        ->withFiltro($filtro)
+        ->withCorreos($correos)
+        ->withActivo("Por Puesto");
+    }
+
+    public function emailAUsuarios(Request $request)
+    {
+        $correos = \App\User::get()->lists("email","nombre");
+        // $filtro = \App\Models\Puesto::distinct()->select("id","nombre")->pluck("nombre","id")->toArray();
+
+        return view("Admin.email")
+        ->withFiltro([])
+        ->withCorreos($correos)
+        ->withActivo("Por Usuarios");
+    }
+
+    public function emailAUsuariosPorDepartamento(Request $request)
+    {
+        $correos = \App\User::whereIn("departamento",$request->input("filtro"))->get()
+        ->lists("email","nombre");
+        $filtro = \App\User::distinct()->select("departamento")->pluck("departamento","departamento")->toArray();
+
+        return view("Admin.email")
+        ->withFiltro($filtro)
+        ->withCorreos($correos)
+        ->withActivo("Por Departamento");
+    }
 }

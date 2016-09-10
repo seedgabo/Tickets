@@ -8,8 +8,9 @@ use App\Funciones;
 use App\Http\Requests;
 use App\Models\CategoriasTickets;
 use App\Models\ComentariosTickets;
-use App\Models\Tickets;
 use App\Models\Documentos;
+use App\Models\Tickets;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -84,44 +85,61 @@ class HomeController extends Controller
 
     public function tickets(Request $request)
     {
+        $desde = Input::get('desde', Carbon::now()->startOfYear());
+        $hasta = Input::get('hasta', Carbon::now()->tomorrow());
+
         $categorias =  Auth::user()->categorias();
         $tickets = Tickets::where('estado',"<>","completado")
         ->whereIn("categoria_id",$categorias->pluck("id"))
         ->orderBy("categoria_id","asc")
         ->orderBy("created_at")
+        ->whereBetween("created_at",[$desde,$hasta])
         ->get();
-        return  view('tickets')->withTickets($tickets);
+
+        return  view('tickets')->withTickets($tickets)->withDesde($desde)->withHasta($hasta);
     }
 
     public function misTickets(Request $request)
     {
+        $desde = Input::get('desde', Carbon::now()->startOfYear());
+        $hasta = Input::get('hasta', Carbon::now()->tomorrow());
+
         $tickets= Tickets::where(function($q){
             $q->orWhere("user_id",Auth::user()->id);
             $q->orWhere("guardian_id",Auth::user()->id);
         })
+        ->whereBetween("created_at",[$desde,$hasta])
         ->orderBy("categoria_id","asc")
         ->orderBy("created_at")
         ->get();
-        return  view('tickets')->withTickets($tickets);
+        return  view('tickets')->withTickets($tickets)->withDesde($desde)->withHasta($hasta);
     }
 
     public function todostickets(Request $request)
     {
-        $tickets = Tickets::
-        orwhereIn("categoria_id",Auth::user()->categorias_id)
-        ->orwhere("user_id",Auth::user()->id)
-        ->orWhere("guardian_id",Auth::user()->id)
-        ->orwhere("invitados_id", "LIKE", '%"'. Auth::user()->id . '%')
+        $desde = Input::get('desde', Carbon::now()->startOfYear());
+        $hasta = Input::get('hasta', Carbon::now()->tomorrow());
+        $tickets = Tickets::where(function($q){
+            $q->orwhereIn("categoria_id",Auth::user()->categorias_id)       
+            ->orwhere("user_id",Auth::user()->id)
+            ->orWhere("guardian_id",Auth::user()->id)
+            ->orwhere("invitados_id", "LIKE", '%"'. Auth::user()->id . '%');
+        })
+        ->whereBetween("created_at",[$desde,$hasta])
         ->get();
 
-        return  view('tickets')->withTickets($tickets);
+        return  view('tickets')->withTickets($tickets)->withDesde($desde)->withHasta($hasta);
     }
 
     public function porCategoria(Request $request, $categoria)
     {
-        $tickets = CategoriasTickets::find($categoria)->tickets;
+        $desde = Input::get('desde', Carbon::now()->startOfYear());
+        $hasta = Input::get('hasta', Carbon::now()->tomorrow());
+        $tickets = CategoriasTickets::find($categoria)->tickets()->whereBetween("created_at",[$desde,$hasta])->get();
         $subCategorias = Auth::user()->categorias()->whereLoose("parent_id",$categoria);
-        return  view('tickets')->withTickets($tickets)->withSubcategorias($subCategorias);
+        return  view('tickets')
+        ->withTickets($tickets)->withSubcategorias($subCategorias)
+        ->withDesde($desde)->withHasta($hasta);
     }
 
     public function ticketAgregar(Request $request)
@@ -229,15 +247,32 @@ class HomeController extends Controller
         return response()->download(storage_path("documentos/" . $documento->id  ."/" . $documento->archivo), $documento->archivo);
     }
 
+    public function descargarArchivo(Request $request, $id)
+    {
+        $archivo = \App\Models\Archivos::findorFail($id);
+
+        $file = Storage::get("archivos/". $id);
+
+        return response()->make($file, 200, array(
+            'Content-Type' => (new \finfo(FILEINFO_MIME))->buffer($file),
+            'Content-Disposition' => 'attachment; filename="' . $archivo->nombre . '"'
+        ));
+    }
+
     public function busqueda(Request $request)
     {
         $query = $request->input('query');
         $documentos = \App\Models\Documentos::where("activo","=","1")->where("titulo","like","%".$query."%")
         ->orwhere("descripcion","like","%".$query."%")->get();
 
-        $tickets = Tickets::where("titulo","like","%".$query."%")
+        $tickets = Tickets::orwhere("titulo","like","%".$query."%")
         ->orwhere("contenido","like","%".$query."%")
-        ->whereIn("categoria_id",Auth::user()->categorias()->pluck("id"))
+        ->where(function($q){
+           $q->orwhereIn("categoria_id",Auth::user()->categorias_id)
+            ->orwhere("user_id",Auth::user()->id)
+            ->orWhere("guardian_id",Auth::user()->id)
+            ->orwhere("invitados_id", "LIKE", '%"'. Auth::user()->id . '%');
+        })
         ->get();
 
         $categorias = CategoriasTickets::where("nombre","like", "%". $query ."%")

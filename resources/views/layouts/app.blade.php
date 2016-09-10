@@ -135,6 +135,7 @@
         <!-- /#page-wrapper -->
 
     </div>
+    @include('backpack::inc.alerts')
     @include('layouts.partials.scripts')
 
 </body>

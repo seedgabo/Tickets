@@ -8,14 +8,14 @@
 <div class="text-center">
 	<ol class="breadcrumb">
 		<li>
-			<a href="{{url('ticket')}}">Tickets Abiertos</a>
+			<a href="{{url('ticket')}}">Casos Abiertos</a>
 		</li>
 
 		<li>
-			<a href="{{url('mis-tickets')}}">mis Tickets</a>
+			<a href="{{url('mis-tickets')}}">mis Casos</a>
 		</li>
 
-		<li> <a href="{{url('tickets/todos')}}">Todos los Tickets </a></li>
+		<li> <a href="{{url('tickets/todos')}}">Todos los Casos </a></li>
 
 		<li class="active">{{$ticket->titulo}}</li>
 	</ol>
@@ -167,6 +167,8 @@
 			{!! Form::submit('Invitar', ['class' => 'btn btn-info']) !!}
 			<br>
 		{!! Form::close() !!}
+		@else 
+		  	<p>{{ $ticket->invitados()->pluck("nombre")->implode(", ")}}</p>
 		@endif
  
 

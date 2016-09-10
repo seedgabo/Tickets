@@ -5,11 +5,14 @@ use Backpack\CRUD\app\Http\Controllers\CrudController;
 // VALIDATION: change the requests to match your own file names if you need form validation
 use App\Http\Requests\TicketsRequest as StoreRequest;
 use App\Http\Requests\TicketsRequest as UpdateRequest;
+use Illuminate\Support\Facades\Auth;
 
 class TicketsCrudController extends CrudController {
 
 	public function __construct() {
         parent::__construct();
+
+        $this->verificarPermisos()
         $this->crud->setModel("App\Models\Tickets");
         $this->crud->setRoute("admin/tickets");
         $this->crud->setEntityNameStrings('Caso', 'Casos');
@@ -162,4 +165,21 @@ class TicketsCrudController extends CrudController {
         $ticket->save();
         return parent::updateCrud();
 	}
+
+
+    public function verificarPermisos()
+    {
+      if(!Auth::user()->can('Agregar Casos') &&  !Auth::user()->hasRole('SuperAdmin'))
+      {
+        $this->crud->denyAccess(['create']);
+      }
+      if(!Auth::user()->can('Editar Casos') &&  !Auth::user()->hasRole('SuperAdmin'))
+      {
+        $this->crud->denyAccess(['update']);
+      }
+      if(!Auth::user()->can('Eliminar Casos') &&  !Auth::user()->hasRole('SuperAdmin'))
+      {
+        $this->crud->denyAccess(['delete']);
+      }
+  }
 }

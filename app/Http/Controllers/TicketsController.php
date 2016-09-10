@@ -101,7 +101,7 @@ class TicketsController extends AppBaseController
         Funciones::sendMailNewTicket($tickets, $tickets->user, $tickets->guardian);
         Flash::success('Ticket Agregado correctamente.');
 
-        return back();
+        return redirect('mis-tickets');
     }
 
     /**

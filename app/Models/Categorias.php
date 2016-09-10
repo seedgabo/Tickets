@@ -4,24 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Backpack\CRUD\CrudTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\User;
 class Categorias extends Model
 {
 	use CrudTrait;
+    use SoftDeletes;
 
-     /*
-	|--------------------------------------------------------------------------
-	| GLOBAL VARIABLES
-	|--------------------------------------------------------------------------
-	*/
 
 	protected $table = 'categorias_tickets';
 	protected $primaryKey = 'id';
-	// public $timestamps = false;
-	// protected $guarded = ['id'];
 	protected $fillable = ["nombre","descripción"];
-	// protected $hidden = [];
-    // protected $dates = [];
+    protected $dates = ['deleted_at'];
 
 	public function parent()
     {

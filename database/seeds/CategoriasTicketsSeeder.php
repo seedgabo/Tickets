@@ -35,5 +35,10 @@ class CategoriasTicketsSeeder extends Seeder
             'nombre' => 'Clínica', 
             'descripción'  => 'Deparamento de Salud',
             ]); 
+        \App\Models\CategoriasTickets::create([
+            'id' => 99,
+            'nombre' => 'Casos Medicos', 
+            'descripción'  => 'Departamento de Salud - Casos Médicos Automaticos del Sistema',
+            ]); 
     }
 }

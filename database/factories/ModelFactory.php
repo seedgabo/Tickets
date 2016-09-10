@@ -19,3 +19,12 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'remember_token' => str_random(10),
     ];
 });
+
+$factory->define(App\Models\Paciente::class, function (Faker\Generator $faker) {
+    return [
+        'nombres' => $faker->first_name,
+        'apellidos' => $faker->last_name,
+        'email' => $faker->email,
+        'nacimiento' => New Carbon\Carbon()
+    ];
+});
